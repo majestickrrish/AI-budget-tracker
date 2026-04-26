@@ -8,11 +8,12 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ai-budget-
 mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
   })
   .catch((err) => {
     console.error('Error connecting to MongoDB:', err.message);
-    process.exit(1);
+    console.log('Please check your MONGO_URI in the .env file!');
   });
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
