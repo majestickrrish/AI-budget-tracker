@@ -1,13 +1,50 @@
 import axios from 'axios';
 
+// Base API URL — will point to real backend in Phase 2
 const API_URL = 'http://localhost:5000/api';
 
-export const testBackend = async () => {
-    try {
-        const response = await axios.get(`${API_URL}/test`);
-        return response.data;
-    } catch (error) {
-        console.error("API call failed:", error);
-        throw error;
-    }
+// Axios instance with auth header injected automatically
+const api = axios.create({ baseURL: API_URL });
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('budget_tracker_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// ─── Auth ──────────────────────────────────────────────────────────────────
+// TODO Phase 2: POST /api/auth/login
+export const loginUser = async (email, password) => {
+  // return api.post('/auth/login', { email, password });
+  return Promise.resolve({ data: { token: 'stub', user: { email } } });
+};
+
+// TODO Phase 2: POST /api/auth/register
+export const registerUser = async (name, email, password) => {
+  // return api.post('/auth/register', { name, email, password });
+  return Promise.resolve({ data: { token: 'stub', user: { name, email } } });
+};
+
+// ─── Expenses ──────────────────────────────────────────────────────────────
+// TODO Phase 2: GET /api/expenses
+export const getExpenses = async () => {
+  // return api.get('/expenses');
+  return Promise.resolve({ data: [] });
+};
+
+// TODO Phase 2: POST /api/expenses
+export const createExpense = async (expenseData) => {
+  // return api.post('/expenses', expenseData);
+  return Promise.resolve({ data: { ...expenseData, _id: Date.now().toString() } });
+};
+
+// TODO Phase 2: DELETE /api/expenses/:id
+export const deleteExpense = async (id) => {
+  // return api.delete(`/expenses/${id}`);
+  return Promise.resolve({ data: { message: 'Deleted' } });
+};
+
+// TODO Phase 2: PUT /api/expenses/:id
+export const updateExpense = async (id, expenseData) => {
+  // return api.put(`/expenses/${id}`, expenseData);
+  return Promise.resolve({ data: expenseData });
 };
