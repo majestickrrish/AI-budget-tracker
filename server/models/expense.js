@@ -51,5 +51,5 @@ const expenseSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Expense', expenseSchema);
+module.exports = mongoose.models.Expense || mongoose.model('Expense', expenseSchema);
 module.exports.CATEGORIES = CATEGORIES;
