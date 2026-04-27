@@ -59,10 +59,3 @@ npm run dev
 ### 5. Verify Everything is Working
 Open your browser to the URL Vite gives you (usually `http://localhost:5173/`) and click the **"Test Backend"** button. If the UI says the API is working and fetching from MongoDB, your full-stack setup is completely working on your laptop!
 
----
-
-## 🛑 Important Team Rules
-- **Rule 1: Never push `.env` to GitHub!** You will leak credentials and create merge conflicts.
-- **Rule 2: Always pull before working.** Always run `git pull origin main` when you open your laptop to ensure your code is up to date!
-- **Rule 3: Work on your own branch.** Use separate branches (e.g., `backend-dev` and `frontend-dev`).
-- **Rule 4: Respect folder boundaries.** Try to keep frontend development strictly in `/client` and backend architecture strictly in `/server`.
