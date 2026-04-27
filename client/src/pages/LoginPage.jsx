@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { fakeLogin } from '../utils/auth';
+import { setCredentials } from '../utils/auth';
+import { loginUser } from '../services/api';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const LoginPage = () => {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!form.email || !form.password) {
@@ -18,10 +19,16 @@ const LoginPage = () => {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      fakeLogin(form.email, form.password);
+    try {
+      const response = await loginUser(form.email, form.password);
+      const { token, user } = response.data.data;
+      setCredentials(token, user);
       navigate('/dashboard');
-    }, 600);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -4,22 +4,9 @@
 const TOKEN_KEY = 'budget_tracker_token';
 const USER_KEY = 'budget_tracker_user';
 
-export const fakeLogin = (email, password) => {
-  // TODO: Replace with real API call — POST /api/auth/login
-  const fakeToken = 'fake-jwt-token-' + Date.now();
-  const fakeUser = { email, name: email.split('@')[0] };
-  localStorage.setItem(TOKEN_KEY, fakeToken);
-  localStorage.setItem(USER_KEY, JSON.stringify(fakeUser));
-  return { token: fakeToken, user: fakeUser };
-};
-
-export const fakeRegister = (name, email, password) => {
-  // TODO: Replace with real API call — POST /api/auth/register
-  const fakeToken = 'fake-jwt-token-' + Date.now();
-  const fakeUser = { email, name };
-  localStorage.setItem(TOKEN_KEY, fakeToken);
-  localStorage.setItem(USER_KEY, JSON.stringify(fakeUser));
-  return { token: fakeToken, user: fakeUser };
+export const setCredentials = (token, user) => {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
 };
 
 export const logout = () => {

@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { fakeRegister } from '../utils/auth';
+import { setCredentials } from '../utils/auth';
+import { registerUser } from '../services/api';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!form.name || !form.email || !form.password) {
+    if (!form.name || !form.email || !form.password || !form.confirmPassword) {
       setError('Please fill in all fields.');
       return;
     }
@@ -21,11 +22,21 @@ const RegisterPage = () => {
       setError('Password must be at least 6 characters.');
       return;
     }
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
     setLoading(true);
-    setTimeout(() => {
-      fakeRegister(form.name, form.email, form.password);
+    try {
+      const response = await registerUser(form.name, form.email, form.password, form.confirmPassword);
+      const { token, user } = response.data.data;
+      setCredentials(token, user);
       navigate('/dashboard');
-    }, 600);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,6 +91,20 @@ const RegisterPage = () => {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Min. 6 characters"
+                autoComplete="new-password"
+                className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Confirm Password</label>
+              <input
+                id="register-confirmpassword"
+                type="password"
+                name="confirmPassword"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                placeholder="Repeat password"
                 autoComplete="new-password"
                 className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
               />

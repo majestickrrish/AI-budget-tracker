@@ -12,16 +12,12 @@ api.interceptors.request.use((config) => {
 });
 
 // ─── Auth ──────────────────────────────────────────────────────────────────
-// TODO Phase 2: POST /api/auth/login
 export const loginUser = async (email, password) => {
-  // return api.post('/auth/login', { email, password });
-  return Promise.resolve({ data: { token: 'stub', user: { email } } });
+  return api.post('/auth/login', { email, password });
 };
 
-// TODO Phase 2: POST /api/auth/register
-export const registerUser = async (name, email, password) => {
-  // return api.post('/auth/register', { name, email, password });
-  return Promise.resolve({ data: { token: 'stub', user: { name, email } } });
+export const registerUser = async (name, email, password, confirmPassword) => {
+  return api.post('/auth/register', { name, email, password, confirmPassword });
 };
 
 // ─── Expenses ──────────────────────────────────────────────────────────────
