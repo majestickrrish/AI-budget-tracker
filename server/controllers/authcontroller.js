@@ -5,21 +5,28 @@ const { sendSuccess, sendError } = require('../utils/response');
 // ─── Register ────────────────────────────────────────────────────────────────
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
 
     // 1. Validate input
-    if (!name || !email || !password) {
-      return sendError(res, {
-        statusCode: 400,
-        message: 'Name, email, and password are required.',
-        code: 'MISSING_FIELDS',
-        details: {
-          required: ['name', 'email', 'password'],
-          received: Object.keys(req.body),
-        },
-      });
-    }
+ if (!name || !email || !password || !confirmPassword) {
+  return sendError(res, {
+    statusCode: 400,
+    message: 'Name, email, password and confirm password are required.',
+    code: 'MISSING_FIELDS',
+    details: {
+      required: ['name', 'email', 'password', 'confirmPassword'],
+      received: Object.keys(req.body),
+    },
+  });
+}
 
+if (password !== confirmPassword) {
+  return sendError(res, {
+    statusCode: 400,
+    message: 'Passwords do not match.',
+    code: 'PASSWORD_MISMATCH',
+  });
+}
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
       return sendError(res, {
