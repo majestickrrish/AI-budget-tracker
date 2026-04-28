@@ -73,21 +73,21 @@ const AuthPage = () => {
   const btnOutline = 'px-8 py-3 border-2 border-white/70 hover:border-white text-white font-bold rounded-full text-xs tracking-widest uppercase transition-all hover:bg-white/10';
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center px-4">
+    <div className="h-screen bg-gray-950 flex flex-col items-center justify-center px-4 overflow-hidden">
 
       {/* ── Logo ── */}
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-indigo-500/30">💰</div>
+      <div className="flex items-center gap-3 mb-4 shrink-0">
+        <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-lg shadow-lg shadow-indigo-500/30">💰</div>
         <div>
-          <p className="text-white font-bold text-lg leading-tight">AI Budget Tracker</p>
+          <p className="text-white font-bold text-base leading-tight">AI Budget Tracker</p>
           <p className="text-indigo-400 text-xs font-medium">Smart finance, powered by AI</p>
         </div>
       </div>
 
       {/* ── Card ── */}
       <div
-        className="relative flex w-full overflow-hidden rounded-3xl shadow-2xl shadow-black/60"
-        style={{ maxWidth: 900, minHeight: 560 }}
+        className="relative flex w-full overflow-hidden rounded-2xl shadow-2xl shadow-black/60 shrink-0"
+        style={{ maxWidth: 860, height: 'min(520px, calc(100vh - 120px))' }}
       >
 
         {/* ════════ Sign In Panel ════════ */}
@@ -207,7 +207,6 @@ const AuthPage = () => {
 
       </div>
 
-      <p className="text-gray-700 text-xs mt-8">© 2025 AI Budget Tracker</p>
     </div>
   );
 };
