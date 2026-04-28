@@ -16,6 +16,32 @@ const ExpensesPage = () => {
   const [error, setError] = useState(null);
 
   const [editingExpense, setEditingExpense] = useState(null);
+  const [shortcuts, setShortcuts] = useState(() => {
+    const saved = localStorage.getItem('expense_shortcuts');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('expense_shortcuts', JSON.stringify(shortcuts));
+  }, [shortcuts]);
+
+  const handleSaveShortcut = (expense) => {
+    const isDuplicate = shortcuts.some(s => 
+      s.description.toLowerCase() === expense.description.toLowerCase() && 
+      s.amount === expense.amount
+    );
+    if (isDuplicate) return;
+
+    setShortcuts(prev => [{
+      id: Date.now(),
+      description: expense.description,
+      amount: expense.amount
+    }, ...prev].slice(0, 5)); // Keep last 5
+  };
+
+  const handleDeleteShortcut = (id) => {
+    setShortcuts(prev => prev.filter(s => s.id !== id));
+  };
 
   // ─── Fetch Expenses ──────────────────────────────────────────────────────
   const fetchExpenses = useCallback(async () => {
@@ -97,7 +123,11 @@ const ExpensesPage = () => {
         onYearChange={setYear}
       />
 
-      <ExpenseForm onAdd={handleAdd} />
+      <ExpenseForm 
+        onAdd={handleAdd} 
+        shortcuts={shortcuts} 
+        onDeleteShortcut={handleDeleteShortcut} 
+      />
 
       {error && (
         <div className="bg-danger/10 border border-danger/30 text-danger text-sm rounded-xl px-4 py-3 mb-4">
@@ -114,6 +144,7 @@ const ExpensesPage = () => {
           expenses={expenses}
           onDelete={handleDelete}
           onEdit={handleEdit}
+          onSaveShortcut={handleSaveShortcut}
         />
       )}
 

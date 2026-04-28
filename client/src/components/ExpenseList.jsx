@@ -1,4 +1,4 @@
-import { Edit2, Trash2, FolderOpen } from 'lucide-react';
+import { Edit2, Trash2, FolderOpen, Bookmark } from 'lucide-react';
 
 // Maps every category from the backend schema to a color pair
 const categoryColors = {
@@ -14,7 +14,7 @@ const categoryColors = {
   'Other':            'bg-border-default text-text-secondary',
 };
 
-const ExpenseList = ({ expenses, onDelete, onEdit }) => {
+const ExpenseList = ({ expenses, onDelete, onEdit, onSaveShortcut }) => {
   if (!expenses.length) {
     return (
       <div className="bg-card border border-border-default rounded-2xl p-12 text-center">
@@ -28,9 +28,15 @@ const ExpenseList = ({ expenses, onDelete, onEdit }) => {
 
   return (
     <div className="bg-card border border-border-default rounded-2xl overflow-hidden">
-      <div className="px-6 py-4 border-b border-border-default">
-        <h3 className="text-text-default font-semibold text-base">All Expenses</h3>
-        <p className="text-xs text-text-secondary opacity-80 mt-0.5">{expenses.length} records</p>
+      <div className="px-6 py-4 border-b border-border-default flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h3 className="text-text-default font-semibold text-base">All Expenses</h3>
+          <p className="text-xs text-text-secondary opacity-80 mt-0.5">{expenses.length} records</p>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] font-medium text-text-secondary bg-background px-3 py-1.5 rounded-lg border border-border-default">
+          <Bookmark size={12} className="text-warning" />
+          <span>Tip: Bookmark an expense to save it as a shortcut</span>
+        </div>
       </div>
 
       <div className="divide-y divide-border-default">
@@ -64,6 +70,14 @@ const ExpenseList = ({ expenses, onDelete, onEdit }) => {
                 −₹{expense.amount.toLocaleString()}
               </span>
               <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  id={`shortcut-expense-${expense._id}`}
+                  onClick={() => onSaveShortcut(expense)}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-transparent hover:border-border-default bg-transparent hover:bg-black/5 dark:hover:bg-white/5 text-text-secondary hover:text-warning transition-all"
+                  title="Save as Shortcut"
+                >
+                  <Bookmark size={16} />
+                </button>
                 <button
                   id={`edit-expense-${expense._id}`}
                   onClick={() => onEdit(expense)}

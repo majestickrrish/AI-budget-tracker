@@ -21,35 +21,39 @@ const YEARS = Array.from({ length: 4 }, (_, i) => currentYear - 3 + i);
 
 const ExpenseFilters = ({ month, year, onMonthChange, onYearChange }) => {
     return (
-        <div className="flex items-center gap-3 mb-6">
-            <CalendarDays size={16} className="text-text-secondary shrink-0" />
-            <span className="text-xs font-medium text-text-secondary shrink-0">Viewing:</span>
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+            <div className="flex items-center gap-2">
+                <CalendarDays size={16} className="text-text-secondary shrink-0" />
+                <span className="text-xs font-bold text-text-secondary uppercase tracking-wider shrink-0">Viewing Period:</span>
+            </div>
 
-            <select
-                id="filter-month"
-                value={month}
-                onChange={(e) => onMonthChange(Number(e.target.value))}
-                className="bg-background border border-border-default text-text-default rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-            >
-                {MONTHS.map((m) => (
-                    <option key={m.value} value={m.value}>
-                        {m.label}
-                    </option>
-                ))}
-            </select>
+            <div className="flex flex-wrap items-center gap-2">
+                <select
+                    id="filter-month"
+                    value={month}
+                    onChange={(e) => onMonthChange(Number(e.target.value))}
+                    className="bg-background border border-border-default text-text-default rounded-xl px-4 py-2 text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors min-w-[130px] cursor-pointer"
+                >
+                    {MONTHS.map((m) => (
+                        <option key={m.value} value={m.value}>
+                            {m.label}
+                        </option>
+                    ))}
+                </select>
 
-            <select
-                id="filter-year"
-                value={year}
-                onChange={(e) => onYearChange(Number(e.target.value))}
-                className="bg-background border border-border-default text-text-default rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-            >
-                {YEARS.map((y) => (
-                    <option key={y} value={y}>
-                        {y}
-                    </option>
-                ))}
-            </select>
+                <select
+                    id="filter-year"
+                    value={year}
+                    onChange={(e) => onYearChange(Number(e.target.value))}
+                    className="bg-background border border-border-default text-text-default rounded-xl px-4 py-2 text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors min-w-[100px] cursor-pointer"
+                >
+                    {YEARS.map((y) => (
+                        <option key={y} value={y}>
+                            {y}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </div>
     );
 };

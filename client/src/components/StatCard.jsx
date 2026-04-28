@@ -13,7 +13,7 @@ const StatCard = ({ icon, label, value, sub, accent = 'primary' }) => {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm text-text-secondary font-medium mb-1">{label}</p>
-        <p className="text-2xl font-bold text-text-default truncate">{value}</p>
+        <p className="text-2xl font-bold= text-text-default truncate">{value}</p>
         {sub && <p className="text-xs text-text-secondary mt-1 opacity-80">{sub}</p>}
       </div>
     </div>
