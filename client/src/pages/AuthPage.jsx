@@ -70,7 +70,7 @@ const AuthPage = () => {
   const btnOutline = 'px-8 py-3 border-2 border-white/70 hover:border-white text-white font-bold rounded-full text-xs tracking-widest uppercase transition-all hover:bg-white/10';
 
   // ── Sign In form (reused in both mobile and desktop) ─────────────────────
-  const SignInForm = () => (
+  const signInFormContent = (
     <form id="login-form" onSubmit={handleLogin} className="w-full flex flex-col gap-4">
       <input id="login-email" type="email" value={loginForm.email}
         onChange={e => setLoginForm({ ...loginForm, email: e.target.value })}
@@ -88,7 +88,7 @@ const AuthPage = () => {
   );
 
   // ── Sign Up form ──────────────────────────────────────────────────────────
-  const SignUpForm = () => (
+  const signUpFormContent = (
     <form id="register-form" onSubmit={handleRegister} className="w-full flex flex-col gap-3">
       <input id="register-name" type="text" value={regForm.name}
         onChange={e => setRegForm({ ...regForm, name: e.target.value })}
@@ -141,7 +141,7 @@ const AuthPage = () => {
               {isRegister ? 'Fill in your details to get started' : 'Sign in to your account'}
             </p>
 
-            {isRegister ? <SignUpForm /> : <SignInForm />}
+            {isRegister ? signUpFormContent : signInFormContent}
 
             {/* Toggle link */}
             <p className="text-center text-gray-500 text-xs mt-5">
@@ -190,7 +190,7 @@ const AuthPage = () => {
           >
             <h2 className="text-2xl font-black text-white mb-1">Sign In</h2>
             <p className="text-gray-400 text-xs mb-6">Use your email and password</p>
-            <SignInForm />
+            {signInFormContent}
           </div>
 
           {/* ── Sign Up Panel ── */}
@@ -206,7 +206,7 @@ const AuthPage = () => {
           >
             <h2 className="text-2xl font-black text-white mb-1">Create Account</h2>
             <p className="text-gray-400 text-xs mb-4">Fill in your details to get started</p>
-            <SignUpForm />
+            {signUpFormContent}
           </div>
 
           {/* ── Gradient Overlay Panel ── */}
