@@ -6,6 +6,7 @@ import SpendingLineChart from '../components/SpendingLineChart';
 import RecentExpenses from '../components/RecentExpenses';
 import InsightCards from '../components/InsightCards';
 import { dummyExpenses, totalSpending, avgMonthlySpending } from '../data/dummyData';
+import { IndianRupee, CalendarDays, Tag, Activity } from 'lucide-react';
 
 const DashboardPage = () => {
   const [expenses, setExpenses] = useState(dummyExpenses);
@@ -20,10 +21,10 @@ const DashboardPage = () => {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        <StatCard icon="💸" label="Total Spent (Apr)" value={`₹${totalSpending.toLocaleString()}`} sub="↑ 8% vs last month" accent="indigo" />
-        <StatCard icon="📅" label="Avg Monthly" value={`₹${avgMonthlySpending.toLocaleString()}`} sub="Last 6 months" accent="green" />
-        <StatCard icon="🏷️" label="Top Category" value="Food" sub="₹3,800 this month" accent="amber" />
-        <StatCard icon="🧬" label="Health Score" value="Good" sub="Savings rate is healthy" accent="pink" />
+        <StatCard icon={<IndianRupee />} label="Total Spent (Apr)" value={`₹${totalSpending.toLocaleString()}`} sub="↑ 8% vs last month" accent="indigo" />
+        <StatCard icon={<CalendarDays />} label="Avg Monthly" value={`₹${avgMonthlySpending.toLocaleString()}`} sub="Last 6 months" accent="green" />
+        <StatCard icon={<Tag />} label="Top Category" value="Food" sub="₹3,800 this month" accent="amber" />
+        <StatCard icon={<Activity />} label="Health Score" value="Good" sub="Savings rate is healthy" accent="pink" />
       </div>
 
       {/* Charts */}

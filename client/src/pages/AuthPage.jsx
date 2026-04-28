@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { setCredentials } from '../utils/auth';
 import { loginUser, registerUser } from '../services/api';
+import { Wallet, UserCircle, Rocket, Eye, EyeOff } from 'lucide-react';
 
 /* ─── AuthPage ───────────────────────────────────────────────────────────────
    Mobile  (< md): Clean single-column card — form only, toggle link at bottom.
@@ -29,6 +30,10 @@ const AuthPage = () => {
   const [regForm,    setRegForm]    = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [regError,   setRegError]   = useState('');
   const [regLoading, setRegLoading] = useState(false);
+
+  // ── Password Visibility State ────────────────────────────────────────────
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   const handleLogin = async (e) => {
@@ -75,9 +80,15 @@ const AuthPage = () => {
       <input id="login-email" type="email" value={loginForm.email}
         onChange={e => setLoginForm({ ...loginForm, email: e.target.value })}
         placeholder="Email" autoComplete="email" className={inputCls} />
-      <input id="login-password" type="password" value={loginForm.password}
-        onChange={e => setLoginForm({ ...loginForm, password: e.target.value })}
-        placeholder="Password" autoComplete="current-password" className={inputCls} />
+      <div className="relative w-full">
+        <input id="login-password" type={showPassword ? "text" : "password"} value={loginForm.password}
+          onChange={e => setLoginForm({ ...loginForm, password: e.target.value })}
+          placeholder="Password" autoComplete="current-password" className={inputCls} />
+        <button type="button" onClick={() => setShowPassword(!showPassword)} tabIndex="-1"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors">
+          {showPassword ? '🙈' : '👁️'}
+        </button>
+      </div>
       {loginError && (
         <p className="text-red-400 text-xs bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2 text-center">{loginError}</p>
       )}
@@ -96,12 +107,24 @@ const AuthPage = () => {
       <input id="register-email" type="email" value={regForm.email}
         onChange={e => setRegForm({ ...regForm, email: e.target.value })}
         placeholder="Email" autoComplete="email" className={inputCls} />
-      <input id="register-password" type="password" value={regForm.password}
-        onChange={e => setRegForm({ ...regForm, password: e.target.value })}
-        placeholder="Password (min 6 chars)" autoComplete="new-password" className={inputCls} />
-      <input id="register-confirmpassword" type="password" value={regForm.confirmPassword}
-        onChange={e => setRegForm({ ...regForm, confirmPassword: e.target.value })}
-        placeholder="Confirm Password" autoComplete="new-password" className={inputCls} />
+      <div className="relative w-full">
+        <input id="register-password" type={showPassword ? "text" : "password"} value={regForm.password}
+          onChange={e => setRegForm({ ...regForm, password: e.target.value })}
+          placeholder="Password (min 6 chars)" autoComplete="new-password" className={inputCls} />
+        <button type="button" onClick={() => setShowPassword(!showPassword)} tabIndex="-1"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors">
+          {showPassword ? '🙈' : '👁️'}
+        </button>
+      </div>
+      <div className="relative w-full">
+        <input id="register-confirmpassword" type={showConfirmPassword ? "text" : "password"} value={regForm.confirmPassword}
+          onChange={e => setRegForm({ ...regForm, confirmPassword: e.target.value })}
+          placeholder="Confirm Password" autoComplete="new-password" className={inputCls} />
+        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} tabIndex="-1"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors">
+          {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
       {regError && (
         <p className="text-red-400 text-xs bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2 text-center">{regError}</p>
       )}
@@ -121,7 +144,7 @@ const AuthPage = () => {
       <div className="w-full max-w-sm md:hidden">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-indigo-500/30">💰</div>
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30"><Wallet size={20} /></div>
           <div>
             <p className="text-white font-bold text-base leading-tight">AI Budget Tracker</p>
             <p className="text-indigo-400 text-xs">Smart finance, powered by AI</p>
@@ -165,7 +188,7 @@ const AuthPage = () => {
       <div className="hidden md:flex md:flex-col md:items-center w-full">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-lg shadow-lg shadow-indigo-500/30">💰</div>
+          <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30"><Wallet size={18} /></div>
           <div>
             <p className="text-white font-bold text-base leading-tight">AI Budget Tracker</p>
             <p className="text-indigo-400 text-xs font-medium">Smart finance, powered by AI</p>
@@ -224,7 +247,7 @@ const AuthPage = () => {
             <div className="relative z-10">
               {isRegister ? (
                 <>
-                  <div className="text-5xl mb-4">👋</div>
+                  <div className="text-white mb-4 flex justify-center"><UserCircle size={56} strokeWidth={1.5} /></div>
                   <h2 className="text-3xl font-black text-white mb-3">Welcome Back!</h2>
                   <p className="text-indigo-200 text-sm leading-relaxed mb-8">
                     Already have an account?<br />Sign in to keep tracking.
@@ -233,7 +256,7 @@ const AuthPage = () => {
                 </>
               ) : (
                 <>
-                  <div className="text-5xl mb-4">🚀</div>
+                  <div className="text-white mb-4 flex justify-center"><Rocket size={56} strokeWidth={1.5} /></div>
                   <h2 className="text-3xl font-black text-white mb-3">Hello, Friend!</h2>
                   <p className="text-indigo-200 text-sm leading-relaxed mb-8">
                     New here? Enter your details and start<br />your AI-powered finance journey.

@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { logout, getUser } from '../utils/auth';
 
+import { Wallet, LayoutDashboard, ReceiptText, Bot, LogOut } from 'lucide-react';
+
 const navItems = [
-  { to: '/dashboard', icon: '📊', label: 'Dashboard' },
-  { to: '/expenses', icon: '💸', label: 'Expenses' },
-  { to: '/insights', icon: '🤖', label: 'AI Insights' },
+  { to: '/dashboard', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
+  { to: '/expenses', icon: <ReceiptText size={20} />, label: 'Expenses' },
+  { to: '/insights', icon: <Bot size={20} />, label: 'AI Insights' },
 ];
 
 /* ─── Layout ─────────────────────────────────────────────────────────────────
@@ -28,8 +30,8 @@ const Layout = ({ children }) => {
       {/* Logo */}
       <div className="px-6 py-6 border-b border-gray-700">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-indigo-500 rounded-xl flex items-center justify-center text-lg shadow-lg">
-            💰
+          <div className="w-9 h-9 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-lg">
+            <Wallet size={20} />
           </div>
           <div>
             <p className="text-sm font-bold text-white leading-tight">AI Budget</p>
@@ -66,7 +68,7 @@ const Layout = ({ children }) => {
               }`
             }
           >
-            <span className="text-base">{item.icon}</span>
+            <span className="flex items-center justify-center">{item.icon}</span>
             {item.label}
           </NavLink>
         ))}
@@ -79,7 +81,7 @@ const Layout = ({ children }) => {
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200"
         >
-          <span>🚪</span>
+          <span><LogOut size={18} /></span>
           Logout
         </button>
       </div>
@@ -125,7 +127,7 @@ const Layout = ({ children }) => {
             <span className="w-5 h-0.5 bg-gray-300 rounded" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-indigo-500 rounded-lg flex items-center justify-center text-sm">💰</div>
+            <div className="w-7 h-7 bg-indigo-500 rounded-lg flex items-center justify-center text-white"><Wallet size={16} /></div>
             <p className="text-white font-bold text-sm">AI Budget Tracker</p>
           </div>
         </header>

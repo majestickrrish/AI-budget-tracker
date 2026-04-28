@@ -8,7 +8,7 @@ const StatCard = ({ icon, label, value, sub, accent = 'indigo' }) => {
 
   return (
     <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 flex items-start gap-4 hover:border-gray-600 transition-all duration-200 hover:shadow-lg hover:shadow-black/20">
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl border ${accentMap[accent]}`}>
+      <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${accentMap[accent]}`}>
         {icon}
       </div>
       <div className="flex-1 min-w-0">
