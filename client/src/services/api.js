@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Base API URL — will point to real backend in Phase 2
+// Base API URL — pointing to real backend
 const API_URL = 'http://localhost:5000/api';
 
 // Axios instance with auth header injected automatically
@@ -21,26 +21,26 @@ export const registerUser = async (name, email, password, confirmPassword) => {
 };
 
 // ─── Expenses ──────────────────────────────────────────────────────────────
-// TODO Phase 2: GET /api/expenses
-export const getExpenses = async () => {
-  // return api.get('/expenses');
-  return Promise.resolve({ data: [] });
+
+// GET /api/expenses?month=4&year=2026
+export const getExpenses = async ({ month, year } = {}) => {
+  const params = {};
+  if (month !== undefined) params.month = month;
+  if (year !== undefined) params.year = year;
+  return api.get('/expenses', { params });
 };
 
-// TODO Phase 2: POST /api/expenses
+// POST /api/expenses
 export const createExpense = async (expenseData) => {
-  // return api.post('/expenses', expenseData);
-  return Promise.resolve({ data: { ...expenseData, _id: Date.now().toString() } });
+  return api.post('/expenses', expenseData);
 };
 
-// TODO Phase 2: DELETE /api/expenses/:id
+// DELETE /api/expenses/:id
 export const deleteExpense = async (id) => {
-  // return api.delete(`/expenses/${id}`);
-  return Promise.resolve({ data: { message: 'Deleted' } });
+  return api.delete(`/expenses/${id}`);
 };
 
-// TODO Phase 2: PUT /api/expenses/:id
+// PATCH /api/expenses/:id
 export const updateExpense = async (id, expenseData) => {
-  // return api.put(`/expenses/${id}`, expenseData);
-  return Promise.resolve({ data: expenseData });
+  return api.patch(`/expenses/${id}`, expenseData);
 };

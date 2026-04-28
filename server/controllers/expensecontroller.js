@@ -1,4 +1,4 @@
-const Expense = require('../models/Expense');
+const Expense = require('../models/expense');
 const { categorizeExpense } = require('../services/categorizationService');
 const { sendSuccess, sendError } = require('../utils/response');
 

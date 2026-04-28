@@ -2,9 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const Demo = require('./models/Demo');
 
-const authRoutes = require('./routes/authRoutes');
-const testRoutes = require('./routes/testRoutes');
-const expenseRoutes = require('./routes/expenseRoutes');
+const authRoutes = require('./routes/authroutes');
+const testRoutes = require('./routes/testroutes');
+const expenseRoutes = require('./routes/expenseroutes');
 
 const app = express();
 

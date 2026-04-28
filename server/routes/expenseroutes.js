@@ -5,8 +5,8 @@ const {
   getExpenses,
   updateExpense,
   deleteExpense,
-} = require('../controllers/expenseController');
-const { protect } = require('../middleware/authMiddleware');
+} = require('../controllers/expensecontroller');
+const { protect } = require('../middleware/authmiddleware');
 
 // All expense routes are protected
 router.post('/', protect, createExpense);
