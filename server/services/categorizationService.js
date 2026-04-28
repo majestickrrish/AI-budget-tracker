@@ -2,11 +2,14 @@ const natural = require('natural');
 const { detectCategory } = require('../utils/categoryDetector');
 const Expense = require('../models/expense');
 
-// Initialize the Naive Bayes classifier
-// This stays lightweight and explainable for a viva.
+// The fallback model is intentionally simple: Naive Bayes is fast,
+// lightweight, and easy to explain in a viva.
 const classifier = new natural.BayesClassifier();
+let isClassifierTrained = false;
 
-// Sample training data for the fallback ML classifier
+// Sample training data for the ML fallback.
+// These examples teach the classifier what descriptions typically
+// belong to each category when rules cannot identify them.
 const SAMPLE_TRAINING_DATA = [
   ['bought pizza from dominos', 'Food & Dining'],
   ['coffee at starbucks', 'Food & Dining'],
@@ -63,15 +66,26 @@ const SAMPLE_TRAINING_DATA = [
   ['fruits purchase', 'Groceries'],
 ];
 
+function normalizeDescription(description = '') {
+  return description.trim().toLowerCase();
+}
+
+function addTrainingExamples(trainingData) {
+  trainingData.forEach(([text, category]) => {
+    classifier.addDocument(normalizeDescription(text), category);
+  });
+}
+
+function finalizeTraining(successMessage) {
+  classifier.train();
+  isClassifierTrained = true;
+  console.log(successMessage);
+}
+
 function trainClassifierWithSampleData() {
   console.log('Training classifier with sample data...');
-
-  SAMPLE_TRAINING_DATA.forEach(([text, category]) => {
-    classifier.addDocument(text, category);
-  });
-
-  classifier.train();
-  console.log('Classifier trained successfully');
+  addTrainingExamples(SAMPLE_TRAINING_DATA);
+  finalizeTraining('Classifier trained successfully with sample data');
 }
 
 async function trainClassifierWithExpenseData(userId = null) {
@@ -79,7 +93,9 @@ async function trainClassifierWithExpenseData(userId = null) {
 
   try {
     const query = { category: { $ne: 'Other' } };
-    if (userId) query.userId = userId;
+    if (userId) {
+      query.userId = userId;
+    }
 
     const expenses = await Expense.find(query).select('description category');
     if (expenses.length === 0) {
@@ -87,40 +103,56 @@ async function trainClassifierWithExpenseData(userId = null) {
       return;
     }
 
-    expenses.forEach((expense) => {
-      if (expense.description) {
-        classifier.addDocument(expense.description.toLowerCase(), expense.category);
-      }
-    });
+    const expenseTrainingData = expenses
+      .filter((expense) => expense.description)
+      .map((expense) => [expense.description, expense.category]);
 
-    classifier.train();
-    console.log('Classifier retrained from existing expenses');
+    addTrainingExamples(expenseTrainingData);
+    finalizeTraining('Classifier retrained successfully from expense history');
   } catch (error) {
     console.error('Error training classifier with expense data:', error);
   }
 }
 
-function categorizeExpense(description) {
-  if (!description) return 'Other';
+function classifyWithRules(description) {
+  return detectCategory(description);
+}
 
-  const ruleBasedCategory = detectCategory(description);
-  if (ruleBasedCategory !== 'Other') {
-    return ruleBasedCategory;
+function classifyWithMachineLearning(description) {
+  if (!isClassifierTrained) {
+    return 'Other';
   }
 
   try {
-    return classifier.classify(description.toLowerCase()) || 'Other';
+    return classifier.classify(normalizeDescription(description)) || 'Other';
   } catch (error) {
     console.error('ML classification error:', error);
     return 'Other';
   }
 }
 
+function categorizeExpense(description) {
+  if (!description) {
+    return 'Other';
+  }
+
+  // Step 1: Try the fast keyword-based system first.
+  const ruleBasedCategory = classifyWithRules(description);
+  if (ruleBasedCategory !== 'Other') {
+    return ruleBasedCategory;
+  }
+
+  // Step 2: If rules fail, fall back to Naive Bayes.
+  return classifyWithMachineLearning(description);
+}
+
 function getClassificationProbabilities(description) {
-  if (!description) return [];
+  if (!description || !isClassifierTrained) {
+    return [];
+  }
 
   try {
-    return classifier.getClassifications(description.toLowerCase());
+    return classifier.getClassifications(normalizeDescription(description));
   } catch (error) {
     console.error('Error getting classification probabilities:', error);
     return [];
@@ -128,6 +160,8 @@ function getClassificationProbabilities(description) {
 }
 
 module.exports = {
+  classifyWithRules,
+  classifyWithMachineLearning,
   trainClassifierWithSampleData,
   trainClassifierWithExpenseData,
   categorizeExpense,

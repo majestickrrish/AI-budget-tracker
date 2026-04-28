@@ -1,5 +1,5 @@
 const Expense = require('../models/Expense');
-const { detectCategory } = require('../utils/categoryDetector');
+const { categorizeExpense } = require('../services/categorizationService');
 const { sendSuccess, sendError } = require('../utils/response');
 
 // ─── Create Expense ───────────────────────────────────────────────────────────
@@ -28,8 +28,10 @@ const createExpense = async (req, res) => {
       });
     }
 
-    // Auto detect category from description
-    const category = detectCategory(description);
+    // Hybrid categorization:
+    // 1. Try rule-based matching first
+    // 2. If no rule matches, use the Naive Bayes fallback
+    const category = categorizeExpense(description);
 
     // Create expense
     const expense = await Expense.create({
@@ -140,10 +142,10 @@ const updateExpense = async (req, res) => {
     if (date !== undefined) expense.date = new Date(date);
     if (isRecurring !== undefined) expense.isRecurring = isRecurring;
 
-    // Re-detect category if description changed
+    // Re-run the same hybrid categorization flow if description changes
     if (description !== undefined) {
       expense.description = description;
-      expense.category = detectCategory(description);
+      expense.category = categorizeExpense(description);
     }
 
     await expense.save();
