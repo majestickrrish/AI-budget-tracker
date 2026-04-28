@@ -35,28 +35,28 @@ export const dummyInsights = [
     icon: '📈',
     title: 'Spending up 8% this month',
     description: 'Your food expenses increased significantly. Consider meal prepping to cut costs.',
-    color: 'amber',
+    color: 'warning',
   },
   {
     id: 2,
     icon: '⚠️',
     title: 'Anomaly Detected',
     description: 'An unusually high expense of ₹3,500 for Education was detected on Apr 12.',
-    color: 'red',
+    color: 'danger',
   },
   {
     id: 3,
     icon: '🤖',
     title: 'AI Prediction',
     description: 'Based on trends, you are projected to spend ₹13,400 next month.',
-    color: 'indigo',
+    color: 'primary',
   },
   {
     id: 4,
     icon: '✅',
     title: 'Financial Health: Good',
     description: 'Your savings rate is healthy. Keep utilities and transport stable.',
-    color: 'green',
+    color: 'success',
   },
 ];
 

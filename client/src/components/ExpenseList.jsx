@@ -1,65 +1,67 @@
+import { Edit2, Trash2, FolderOpen } from 'lucide-react';
+
 const categoryColors = {
-  Food: 'bg-indigo-500/20 text-indigo-400',
-  Entertainment: 'bg-amber-500/20 text-amber-400',
-  Utilities: 'bg-green-500/20 text-green-400',
-  Transport: 'bg-blue-500/20 text-blue-400',
-  Health: 'bg-pink-500/20 text-pink-400',
-  Education: 'bg-purple-500/20 text-purple-400',
-  Shopping: 'bg-orange-500/20 text-orange-400',
-  Other: 'bg-gray-500/20 text-gray-400',
+  Food: 'bg-primary/20 text-primary',
+  Entertainment: 'bg-warning/20 text-warning',
+  Utilities: 'bg-success/20 text-success',
+  Transport: 'bg-primary/20 text-primary',
+  Health: 'bg-danger/20 text-danger',
+  Education: 'bg-primary/20 text-primary',
+  Shopping: 'bg-warning/20 text-warning',
+  Other: 'bg-border-default text-text-secondary',
 };
 
 const ExpenseList = ({ expenses, onDelete, onEdit }) => {
   if (!expenses.length) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-2xl p-12 text-center">
-        <p className="text-4xl mb-3">🗂️</p>
-        <p className="text-gray-400 text-sm">No expenses yet. Add your first one above!</p>
+      <div className="bg-card border border-border-default rounded-2xl p-12 text-center">
+        <div className="mb-3 flex justify-center"><FolderOpen size={48} className="text-text-secondary opacity-50" /></div>
+        <p className="text-text-secondary text-sm">No expenses yet. Add your first one above!</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-700">
-        <h3 className="text-white font-semibold text-base">All Expenses</h3>
-        <p className="text-xs text-gray-500 mt-0.5">{expenses.length} records</p>
+    <div className="bg-card border border-border-default rounded-2xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-border-default">
+        <h3 className="text-text-default font-semibold text-base">All Expenses</h3>
+        <p className="text-xs text-text-secondary opacity-80 mt-0.5">{expenses.length} records</p>
       </div>
 
-      <div className="divide-y divide-gray-700/50">
+      <div className="divide-y divide-border-default">
         {expenses.map((expense) => (
           <div
             key={expense.id}
-            className="flex items-center justify-between px-6 py-4 hover:bg-gray-700/30 transition-colors duration-150 group"
+            className="flex items-center justify-between px-6 py-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors group"
           >
             <div className="flex items-center gap-4 min-w-0">
               <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium shrink-0 ${categoryColors[expense.category] || categoryColors.Other}`}>
                 {expense.category}
               </span>
               <div className="min-w-0">
-                <p className="text-sm text-white font-medium truncate">{expense.description}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{expense.date}</p>
+                <p className="text-sm text-text-default font-medium truncate">{expense.description}</p>
+                <p className="text-xs text-text-secondary opacity-80 mt-0.5">{expense.date}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4 shrink-0 ml-4">
-              <span className="text-sm font-bold text-red-400">−₹{expense.amount.toLocaleString()}</span>
-              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+              <span className="text-sm font-bold text-danger">−₹{expense.amount.toLocaleString()}</span>
+              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   id={`edit-expense-${expense.id}`}
                   onClick={() => onEdit(expense)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-indigo-600 text-gray-400 hover:text-white transition-all duration-200 text-sm"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-transparent hover:border-border-default bg-transparent hover:bg-black/5 dark:hover:bg-white/5 text-text-secondary hover:text-primary transition-all"
                   title="Edit"
                 >
-                  ✏️
+                  <Edit2 size={16} />
                 </button>
                 <button
                   id={`delete-expense-${expense.id}`}
                   onClick={() => onDelete(expense.id)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-red-600 text-gray-400 hover:text-white transition-all duration-200 text-sm"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-transparent hover:border-border-default bg-transparent hover:bg-black/5 dark:hover:bg-white/5 text-text-secondary hover:text-danger transition-all"
                   title="Delete"
                 >
-                  🗑️
+                  <Trash2 size={16} />
                 </button>
               </div>
             </div>

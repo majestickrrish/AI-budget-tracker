@@ -13,18 +13,17 @@ const DashboardPage = () => {
 
   return (
     <Layout>
-      {/* Header */}
       <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-400 text-sm mt-1">Your financial overview for April 2025</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-text-default">Dashboard</h1>
+        <p className="text-text-secondary text-sm mt-1">Your financial overview for April 2025</p>
       </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        <StatCard icon={<IndianRupee />} label="Total Spent (Apr)" value={`₹${totalSpending.toLocaleString()}`} sub="↑ 8% vs last month" accent="indigo" />
-        <StatCard icon={<CalendarDays />} label="Avg Monthly" value={`₹${avgMonthlySpending.toLocaleString()}`} sub="Last 6 months" accent="green" />
-        <StatCard icon={<Tag />} label="Top Category" value="Food" sub="₹3,800 this month" accent="amber" />
-        <StatCard icon={<Activity />} label="Health Score" value="Good" sub="Savings rate is healthy" accent="pink" />
+        <StatCard icon={<IndianRupee />} label="Total Spent (Apr)" value={`₹${totalSpending.toLocaleString()}`} sub="↑ 8% vs last month" accent="danger" />
+        <StatCard icon={<CalendarDays />} label="Avg Monthly" value={`₹${avgMonthlySpending.toLocaleString()}`} sub="Last 6 months" accent="primary" />
+        <StatCard icon={<Tag />} label="Top Category" value="Food" sub="₹3,800 this month" accent="warning" />
+        <StatCard icon={<Activity />} label="Health Score" value="Good" sub="Savings rate is healthy" accent="success" />
       </div>
 
       {/* Charts */}

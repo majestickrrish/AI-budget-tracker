@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { logout, getUser } from '../utils/auth';
+import ThemeToggle from './ThemeToggle';
 
 import { Wallet, LayoutDashboard, ReceiptText, Bot, LogOut } from 'lucide-react';
 
@@ -28,27 +29,29 @@ const Layout = ({ children }) => {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="px-6 py-6 border-b border-gray-700">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-lg">
-            <Wallet size={20} />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-white leading-tight">AI Budget</p>
-            <p className="text-xs text-indigo-400 font-medium">Tracker</p>
+      <div className="px-6 py-6 border-b border-border-default">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg">
+              <Wallet size={20} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-text-default leading-tight">AI Budget</p>
+              <p className="text-xs text-primary font-medium">Tracker</p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* User Info */}
-      <div className="px-6 py-4 border-b border-gray-700">
+      <div className="px-6 py-4 border-b border-border-default">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-sm font-bold uppercase shrink-0">
+          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold uppercase shrink-0">
             {user?.name?.[0] || 'U'}
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-white capitalize truncate">{user?.name || 'User'}</p>
-            <p className="text-xs text-gray-400 truncate">{user?.email || ''}</p>
+            <p className="text-sm font-semibold text-text-default capitalize truncate">{user?.name || 'User'}</p>
+            <p className="text-xs text-text-secondary truncate">{user?.email || ''}</p>
           </div>
         </div>
       </div>
@@ -61,10 +64,10 @@ const Layout = ({ children }) => {
             to={item.to}
             onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+              `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                  ? 'bg-primary text-white shadow-lg'
+                  : 'text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-default'
               }`
             }
           >
@@ -74,12 +77,13 @@ const Layout = ({ children }) => {
         ))}
       </nav>
 
-      {/* Logout */}
-      <div className="px-4 pb-6">
+      {/* Theme Toggle & Logout */}
+      <div className="px-4 pb-6 space-y-1">
+        <ThemeToggle variant="sidebar" />
         <button
           id="logout-btn"
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-text-secondary hover:bg-danger/10 hover:text-danger transition-all"
         >
           <span><LogOut size={18} /></span>
           Logout
@@ -89,7 +93,7 @@ const Layout = ({ children }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-950 flex">
+    <div className="min-h-screen bg-background flex">
 
       {/* ── Mobile overlay backdrop ── */}
       {sidebarOpen && (
@@ -102,7 +106,7 @@ const Layout = ({ children }) => {
       {/* ── Sidebar: desktop always visible, mobile drawer ── */}
       <aside
         className={`
-          fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white flex flex-col shadow-2xl z-50
+          fixed top-0 left-0 h-screen w-64 bg-card text-text-default flex flex-col shadow-2xl z-50
           transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           lg:translate-x-0
@@ -115,21 +119,25 @@ const Layout = ({ children }) => {
       <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
 
         {/* Mobile top bar with hamburger */}
-        <header className="lg:hidden sticky top-0 z-30 bg-gray-900 border-b border-gray-700 px-4 py-3 flex items-center gap-4">
-          <button
-            id="hamburger-btn"
-            onClick={() => setSidebarOpen(true)}
-            className="w-9 h-9 flex flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-gray-800 transition-colors"
-            aria-label="Open menu"
-          >
-            <span className="w-5 h-0.5 bg-gray-300 rounded" />
-            <span className="w-5 h-0.5 bg-gray-300 rounded" />
-            <span className="w-5 h-0.5 bg-gray-300 rounded" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-indigo-500 rounded-lg flex items-center justify-center text-white"><Wallet size={16} /></div>
-            <p className="text-white font-bold text-sm">AI Budget Tracker</p>
+        <header className="lg:hidden sticky top-0 z-30 bg-card border-b border-border-default px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              id="hamburger-btn"
+              onClick={() => setSidebarOpen(true)}
+              className="w-9 h-9 flex flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              aria-label="Open menu"
+            >
+              <span className="w-5 h-0.5 bg-text-secondary rounded" />
+              <span className="w-5 h-0.5 bg-text-secondary rounded" />
+              <span className="w-5 h-0.5 bg-text-secondary rounded" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-white"><Wallet size={16} /></div>
+              <p className="text-text-default font-bold text-sm">AI Budget Tracker</p>
+            </div>
           </div>
+          
+          <ThemeToggle />
         </header>
 
         {/* Page content */}

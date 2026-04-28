@@ -1,1 +1,57 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: var(--bg);
+  --color-card: var(--card);
+  --color-text-default: var(--text);
+  --color-text-secondary: var(--text-secondary);
+  
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  
+  --color-border-default: var(--border);
+  
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+}
+
+@layer base {
+  :root {
+    --bg: #F9FAFB;
+    --card: #FFFFFF;
+    --text: #111827;
+    --text-secondary: #6B7280;
+    --primary: #3B82F6;
+    --primary-hover: #2563EB;
+    --border: #E5E7EB;
+    --success: #10B981;
+    --danger: #EF4444;
+    --warning: #F59E0B;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0F172A;
+    --card: #1E293B;
+    --text: #E5E7EB;
+    --text-secondary: #94A3B8;
+    --primary: #60A5FA;
+    --primary-hover: #3B82F6;
+    --border: #334155;
+    --success: #34D399;
+    --danger: #F87171;
+    --warning: #FBBF24;
+  }
+
+  /* Unified smooth transitions for theme switching */
+  *, *::before, *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Ensure specific slow animations are not broken */
+  .transition-slow {
+    transition-duration: 700ms !important;
+  }
+}

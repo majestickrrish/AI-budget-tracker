@@ -4,9 +4,9 @@ import { categoryPieData } from '../data/dummyData';
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 shadow-xl">
-        <p className="text-white font-semibold">{payload[0].name}</p>
-        <p className="text-indigo-400 font-bold">₹{payload[0].value.toLocaleString()}</p>
+      <div className="bg-card border border-border-default rounded-xl px-4 py-3 shadow-xl">
+        <p className="text-text-default font-semibold">{payload[0].name}</p>
+        <p className="text-primary font-bold">₹{payload[0].value.toLocaleString()}</p>
       </div>
     );
   }
@@ -14,8 +14,8 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 const SpendingPieChart = () => (
-  <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6">
-    <h3 className="text-white font-semibold text-base mb-5">Spending by Category</h3>
+  <div className="bg-card border border-border-default rounded-2xl p-6">
+    <h3 className="text-text-default font-semibold text-base mb-5">Spending by Category</h3>
     <ResponsiveContainer width="100%" height={260}>
       <PieChart>
         <Pie
@@ -35,7 +35,7 @@ const SpendingPieChart = () => (
         <Legend
           iconType="circle"
           iconSize={8}
-          formatter={(value) => <span className="text-gray-400 text-xs">{value}</span>}
+          formatter={(value) => <span className="text-text-secondary text-xs">{value}</span>}
         />
       </PieChart>
     </ResponsiveContainer>

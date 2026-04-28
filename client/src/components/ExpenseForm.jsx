@@ -25,11 +25,11 @@ const ExpenseForm = ({ onAdd }) => {
   };
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-6">
-      <h3 className="text-white font-semibold text-base mb-5">Add New Expense</h3>
+    <div className="bg-card border border-border-default rounded-2xl p-6 mb-6">
+      <h3 className="text-text-default font-semibold text-base mb-5">Add New Expense</h3>
       <form id="expense-form" onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="sm:col-span-2">
-          <label className="block text-xs font-medium text-gray-400 mb-1.5">Description</label>
+          <label className="block text-xs font-medium text-text-secondary mb-1.5">Description</label>
           <input
             id="expense-description"
             type="text"
@@ -38,12 +38,12 @@ const ExpenseForm = ({ onAdd }) => {
             onChange={handleChange}
             placeholder="e.g. Grocery shopping"
             required
-            className="w-full bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+            className="w-full bg-background border border-border-default text-text-default placeholder-text-secondary rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-400 mb-1.5">Amount (₹)</label>
+          <label className="block text-xs font-medium text-text-secondary mb-1.5">Amount (₹)</label>
           <input
             id="expense-amount"
             type="number"
@@ -54,18 +54,18 @@ const ExpenseForm = ({ onAdd }) => {
             min="0"
             step="0.01"
             required
-            className="w-full bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+            className="w-full bg-background border border-border-default text-text-default placeholder-text-secondary rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-400 mb-1.5">Category</label>
+          <label className="block text-xs font-medium text-text-secondary mb-1.5">Category</label>
           <select
             id="expense-category"
             name="category"
             value={form.category}
             onChange={handleChange}
-            className="w-full bg-gray-900 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+            className="w-full bg-background border border-border-default text-text-default rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           >
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
@@ -78,7 +78,7 @@ const ExpenseForm = ({ onAdd }) => {
             id="add-expense-btn"
             type="submit"
             disabled={loading}
-            className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40"
+            className="px-6 py-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-lg"
           >
             {loading ? 'Adding...' : '+ Add Expense'}
           </button>

@@ -17,10 +17,10 @@ const ExpensesPage = () => {
     <Layout>
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white">Expenses</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-text-default">Expenses</h1>
+          <p className="text-text-secondary text-sm mt-1">
             {expenses.length} expenses · Total:{' '}
-            <span className="text-red-400 font-semibold">₹{total.toLocaleString()}</span>
+            <span className="text-danger font-semibold">₹{total.toLocaleString()}</span>
           </p>
         </div>
       </div>
