@@ -7,7 +7,8 @@ import {
   DollarSign, 
   Activity, 
   Calendar,
-  Layers
+  Layers,
+  Inbox
 } from 'lucide-react';
 import Layout from '../components/Layout';
 import { getExpenses } from '../services/api';
@@ -49,6 +50,16 @@ const DashboardStat = ({ icon: Icon, label, value, sub, accent = 'primary' }) =>
   );
 };
 
+// ─── Internal Empty State Component ───────────────────────────────────────────
+const WidgetEmptyState = ({ message = 'No data available' }) => (
+  <div className="flex flex-col items-center justify-center h-full py-10 opacity-60">
+    <Inbox size={32} className="text-text-secondary mb-3 opacity-30" />
+    <p className="text-xs font-medium text-text-secondary text-center max-w-[140px]">
+      {message}
+    </p>
+  </div>
+);
+
 // ─── Skeleton loader ──────────────────────────────────────────────────────────
 const Skeleton = ({ className }) => (
   <div className={`animate-pulse bg-card border border-border-default rounded-2xl ${className}`} />
@@ -85,8 +96,9 @@ const DashboardPage = () => {
   }, []);
 
   // ── Derived analytics ──────────────────────────────────────────────────────
+  const hasExpenses = expenses.length > 0;
   const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
-  const avgPerTx   = expenses.length ? totalSpent / expenses.length : 0;
+  const avgPerTx   = hasExpenses ? totalSpent / expenses.length : 0;
 
   const categoryTotals = expenses.reduce((acc, e) => {
     acc[e.category] = (acc[e.category] || 0) + e.amount;
@@ -120,7 +132,7 @@ const DashboardPage = () => {
 
   // ── Charts ─────────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (loading || expenses.length === 0) return;
+    if (loading || !hasExpenses) return;
 
     const initCharts = () => {
       if (!window.Chart) { setTimeout(initCharts, 100); return; }
@@ -236,7 +248,7 @@ const DashboardPage = () => {
           <h1 className="text-xl sm:text-2xl font-bold text-text-default">Dashboard</h1>
           <p className="text-text-secondary text-sm mt-1">{monthLabel}</p>
         </div>
-        {!loading && expenses.length > 0 && (
+        {!loading && hasExpenses && (
           <span className="text-xs px-3 py-1.5 rounded-full bg-card border border-border-default text-text-secondary font-medium">
             {expenses.length} ACTIVE TRANSACTIONS
           </span>
@@ -262,17 +274,17 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* Full dashboard */}
-      {!loading && expenses.length > 0 && (
+      {/* Full dashboard content */}
+      {!loading && (
         <div className="space-y-6 pb-10">
 
-          {/* Stat cards - Professional style */}
+          {/* Stat cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <DashboardStat
               icon={DollarSign}
               label="Total spent"
               value={`₹${totalSpent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
-              sub={`${expenses.length} transactions`}
+              sub={hasExpenses ? `${expenses.length} transactions` : 'No records yet'}
               accent="danger"
             />
             <DashboardStat
@@ -286,28 +298,36 @@ const DashboardPage = () => {
               icon={TrendingUp}
               label="Top category"
               value={topCategory ? topCategory[0] : '—'}
-              sub={topCategory ? `${Math.round((topCategory[1] / totalSpent) * 100)}% of total spending` : ''}
+              sub={topCategory ? `${Math.round((topCategory[1] / totalSpent) * 100)}% of total spending` : 'No data'}
               accent="warning"
             />
           </div>
 
-          {/* Charts row - Professional with advanced tooltips */}
+          {/* Charts row */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-            <div className="lg:col-span-3 bg-card border border-border-default rounded-2xl p-6">
+            <div className="lg:col-span-3 bg-card border border-border-default rounded-2xl p-6 min-h-[300px]">
               <h3 className="text-sm font-bold text-text-default mb-6 flex items-center gap-2">
                 <TrendingUp size={16} className="text-primary" /> Daily Spending Trend
               </h3>
-              <div style={{ position: 'relative', width: '100%', height: '220px' }}>
-                <canvas ref={lineRef} />
-              </div>
+              {hasExpenses ? (
+                <div style={{ position: 'relative', width: '100%', height: '220px' }}>
+                  <canvas ref={lineRef} />
+                </div>
+              ) : (
+                <WidgetEmptyState message="Start adding expenses to see your spending trend" />
+              )}
             </div>
-            <div className="lg:col-span-2 bg-card border border-border-default rounded-2xl p-6">
+            <div className="lg:col-span-2 bg-card border border-border-default rounded-2xl p-6 min-h-[300px]">
               <h3 className="text-sm font-bold text-text-default mb-6 flex items-center gap-2">
                 <PieChartIcon size={16} className="text-primary" /> Category Allocation
               </h3>
-              <div style={{ position: 'relative', width: '100%', height: '220px' }}>
-                <canvas ref={donutRef} />
-              </div>
+              {hasExpenses ? (
+                <div style={{ position: 'relative', width: '100%', height: '220px' }}>
+                  <canvas ref={donutRef} />
+                </div>
+              ) : (
+                <WidgetEmptyState message="Categorization insights will appear once you add data" />
+              )}
             </div>
           </div>
 
@@ -315,79 +335,80 @@ const DashboardPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
             {/* Recent transactions */}
-            <div className="bg-card border border-border-default rounded-2xl overflow-hidden shadow-sm">
+            <div className="bg-card border border-border-default rounded-2xl overflow-hidden shadow-sm min-h-[360px] flex flex-col">
               <div className="px-6 py-4 border-b border-border-default flex items-center justify-between">
                 <h3 className="text-sm font-bold text-text-default">Recent Transactions</h3>
                 <Link to="/expenses" className="text-xs font-bold text-primary hover:underline flex items-center gap-1 group">
                   View All <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               </div>
-              <div className="divide-y divide-border-default">
-                {recentExpenses.map((e) => {
-                  const cfg = CATEGORY_CONFIG[e.category] || CATEGORY_CONFIG['Other'];
-                  return (
-                    <div key={e._id} className="flex items-center gap-4 px-6 py-4 hover:bg-background/40 transition-colors">
-                      <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-lg shrink-0 ${cfg.bg}`}>
-                        {cfg.emoji}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-bold text-text-default truncate">{e.description}</p>
-                        <p className="text-xs text-text-secondary mt-0.5 font-medium truncate">
-                          {e.category} • {new Date(e.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                        </p>
-                      </div>
-                      <p className="text-base font-bold text-danger shrink-0">
-                        −₹{e.amount.toLocaleString('en-IN')}
-                      </p>
-                    </div>
-                  );
-                })}
+              <div className="flex-1">
+                {hasExpenses ? (
+                  <div className="divide-y divide-border-default">
+                    {recentExpenses.map((e) => {
+                      const cfg = CATEGORY_CONFIG[e.category] || CATEGORY_CONFIG['Other'];
+                      return (
+                        <div key={e._id} className="flex items-center gap-4 px-6 py-4 hover:bg-background/40 transition-colors">
+                          <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-lg shrink-0 ${cfg.bg}`}>
+                            {cfg.emoji}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-bold text-text-default truncate">{e.description}</p>
+                            <p className="text-xs text-text-secondary mt-0.5 font-medium truncate">
+                              {e.category} • {new Date(e.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                            </p>
+                          </div>
+                          <p className="text-base font-bold text-danger shrink-0">
+                            −₹{e.amount.toLocaleString('en-IN')}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <WidgetEmptyState message="No recent transactions found" />
+                )}
               </div>
             </div>
 
-            {/* Spending Concentration - Restored Percentages */}
-            <div className="bg-card border border-border-default rounded-2xl p-6 shadow-sm">
+            {/* Spending Concentration */}
+            <div className="bg-card border border-border-default rounded-2xl p-6 shadow-sm min-h-[360px] flex flex-col">
               <h3 className="text-sm font-bold text-text-default mb-6 flex items-center gap-2">
                 <Layers size={16} className="text-primary" /> Spending Concentration
               </h3>
-              <div className="space-y-5">
-                {sortedCategories.map(([cat, amt]) => {
-                  const cfg = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG['Other'];
-                  const pct = Math.round((amt / totalSpent) * 100);
-                  const barWidth = Math.round((amt / maxCategoryAmt) * 100);
-                  return (
-                    <div key={cat} className="space-y-2">
-                      <div className="flex items-center justify-between text-xs font-bold">
-                        <span className="text-text-default flex items-center gap-2 min-w-0">
-                          <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: cfg.color }} />
-                          <span className="truncate">{cat}</span>
-                        </span>
-                        <span className="text-text-secondary">{pct}% • ₹{amt.toLocaleString('en-IN')}</span>
-                      </div>
-                      <div className="h-1.5 bg-background rounded-full overflow-hidden border border-border-default/30">
-                        <div
-                          className="h-full rounded-full transition-all duration-700 ease-out"
-                          style={{ width: `${barWidth}%`, backgroundColor: cfg.color }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="flex-1">
+                {hasExpenses ? (
+                  <div className="space-y-5">
+                    {sortedCategories.map(([cat, amt]) => {
+                      const cfg = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG['Other'];
+                      const pct = Math.round((amt / totalSpent) * 100);
+                      const barWidth = Math.round((amt / maxCategoryAmt) * 100);
+                      return (
+                        <div key={cat} className="space-y-2">
+                          <div className="flex items-center justify-between text-xs font-bold">
+                            <span className="text-text-default flex items-center gap-2 min-w-0">
+                              <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: cfg.color }} />
+                              <span className="truncate">{cat}</span>
+                            </span>
+                            <span className="text-text-secondary">{pct}% • ₹{amt.toLocaleString('en-IN')}</span>
+                          </div>
+                          <div className="h-1.5 bg-background rounded-full overflow-hidden border border-border-default/30">
+                            <div
+                              className="h-full rounded-full transition-all duration-700 ease-out"
+                              style={{ width: `${barWidth}%`, backgroundColor: cfg.color }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <WidgetEmptyState message="Detailed category breakdown will show up here" />
+                )}
               </div>
             </div>
 
           </div>
-        </div>
-      )}
-
-      {/* Empty state */}
-      {!loading && expenses.length === 0 && !error && (
-        <div className="bg-card border border-border-default rounded-2xl p-16 text-center">
-          <div className="w-12 h-12 rounded-full bg-background flex items-center justify-center mx-auto mb-4">
-            <Calendar size={20} className="text-text-secondary" />
-          </div>
-          <p className="text-text-default font-medium mb-1">No expenses this month</p>
-          <p className="text-text-secondary text-sm">Add your first expense to see spending insights here.</p>
         </div>
       )}
     </Layout>
