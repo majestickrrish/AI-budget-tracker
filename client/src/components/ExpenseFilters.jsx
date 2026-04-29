@@ -1,126 +1,112 @@
-import { Edit2, Trash2, FolderOpen, Bookmark } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { CalendarDays, ChevronDown } from 'lucide-react';
 
-const CATEGORY_CONFIG = {
-    'Food & Dining': { color: '#D85A30', bg: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20' },
-    'Transport': { color: '#378ADD', bg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' },
-    'Shopping': { color: '#D4537E', bg: 'bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/20' },
-    'Entertainment': { color: '#BA7517', bg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20' },
-    'Health & Medical': { color: '#E24B4A', bg: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20' },
-    'Education': { color: '#378ADD', bg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' },
-    'Bills & Utilities': { color: '#1D9E75', bg: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20' },
-    'Travel': { color: '#7F77DD', bg: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20' },
-    'Groceries': { color: '#639922', bg: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' },
-    'Other': { color: '#888780', bg: 'bg-border-default text-text-secondary border-border-default' },
-};
+const MONTHS = [
+  { value: 1, label: 'January' },
+  { value: 2, label: 'February' },
+  { value: 3, label: 'March' },
+  { value: 4, label: 'April' },
+  { value: 5, label: 'May' },
+  { value: 6, label: 'June' },
+  { value: 7, label: 'July' },
+  { value: 8, label: 'August' },
+  { value: 9, label: 'September' },
+  { value: 10, label: 'October' },
+  { value: 11, label: 'November' },
+  { value: 12, label: 'December' },
+];
 
-const ActionButton = ({ id, onClick, title, hoverClass, children }) => (
-    <button
-        id={id}
-        onClick={onClick}
-        title={title}
-        className={`w-8 h-8 flex items-center justify-center rounded-lg text-text-secondary transition-all duration-150 hover:bg-black/5 dark:hover:bg-white/5 ${hoverClass}`}
-    >
-        {children}
-    </button>
-);
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: 4 }, (_, i) => currentYear - 3 + i);
 
-const ExpenseList = ({ expenses, onDelete, onEdit, onSaveShortcut }) => {
-    if (!expenses.length) {
-        return (
-            <div className="bg-card border border-border-default rounded-2xl p-16 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-background border border-border-default flex items-center justify-center mx-auto mb-4">
-                    <FolderOpen size={24} className="text-text-secondary opacity-40" />
-                </div>
-                <p className="text-sm font-semibold text-text-default mb-1">No expenses found</p>
-                <p className="text-xs text-text-secondary opacity-70">
-                    Add your first expense using the form above.
-                </p>
-            </div>
-        );
-    }
+const CustomDropdown = ({ label, value, options, onChange, width = 'w-40' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef(null);
 
-    return (
-        <div className="bg-card border border-border-default rounded-2xl overflow-hidden">
-            {/* Header */}
-            <div className="px-6 py-4 border-b border-border-default flex items-center justify-between">
-                <div>
-                    <h3 className="text-sm font-bold text-text-default">All Expenses</h3>
-                    <p className="text-xs text-text-secondary opacity-70 mt-0.5">{expenses.length} records</p>
-                </div>
-                <div className="flex items-center gap-1.5 text-[11px] font-medium text-text-secondary bg-background px-3 py-1.5 rounded-lg border border-border-default">
-                    <Bookmark size={10} className="text-warning shrink-0" />
-                    Hover a row to bookmark or edit
-                </div>
-            </div>
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-            {/* List */}
-            <div className="divide-y divide-border-default">
-                {expenses.map((expense) => {
-                    const cfg = CATEGORY_CONFIG[expense.category] || CATEGORY_CONFIG['Other'];
-                    return (
-                        <div
-                            key={expense._id}
-                            className="flex items-center gap-4 px-6 py-3.5 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors duration-150 group"
-                        >
-                            {/* Category badge */}
-                            <span
-                                className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-semibold border shrink-0 ${cfg.bg}`}
-                            >
-                                {expense.category}
-                            </span>
+  const selectedLabel = options.find(o => o.value === value || o === value)?.label || value;
 
-                            {/* Description + date */}
-                            <div className="min-w-0 flex-1">
-                                <p className="text-sm font-semibold text-text-default truncate leading-tight">
-                                    {expense.description}
-                                </p>
-                                <p className="text-xs text-text-secondary opacity-70 mt-0.5">
-                                    {new Date(expense.date).toLocaleDateString('en-IN', {
-                                        day: 'numeric',
-                                        month: 'short',
-                                        year: 'numeric',
-                                    })}
-                                </p>
-                            </div>
+  return (
+    <div className={`relative ${width}`} ref={containerRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between bg-card border border-border-default hover:border-primary text-text-default rounded-xl px-4 py-2 text-sm font-medium transition-all shadow-sm"
+      >
+        <span className="truncate">{selectedLabel}</span>
+        <ChevronDown size={14} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
 
-                            {/* Amount */}
-                            <span className="text-sm font-bold text-danger shrink-0 tabular-nums">
-                                −₹{expense.amount.toLocaleString('en-IN')}
-                            </span>
+      {isOpen && (
+        <div className="absolute top-full left-0 mt-2 w-full bg-card border border-border-default rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="max-h-48 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-border-default">
+            {options.map((opt) => {
+              const val = opt.value !== undefined ? opt.value : opt;
+              const lab = opt.label !== undefined ? opt.label : opt;
+              const isSelected = val === value;
 
-                            {/* Actions */}
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150 shrink-0">
-                                <ActionButton
-                                    id={`shortcut-expense-${expense._id}`}
-                                    onClick={() => onSaveShortcut(expense)}
-                                    title="Save as shortcut"
-                                    hoverClass="hover:text-warning"
-                                >
-                                    <Bookmark size={14} />
-                                </ActionButton>
-                                <ActionButton
-                                    id={`edit-expense-${expense._id}`}
-                                    onClick={() => onEdit(expense)}
-                                    title="Edit expense"
-                                    hoverClass="hover:text-primary"
-                                >
-                                    <Edit2 size={14} />
-                                </ActionButton>
-                                <ActionButton
-                                    id={`delete-expense-${expense._id}`}
-                                    onClick={() => onDelete(expense._id)}
-                                    title="Delete expense"
-                                    hoverClass="hover:text-danger"
-                                >
-                                    <Trash2 size={14} />
-                                </ActionButton>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+              return (
+                <button
+                  key={val}
+                  type="button"
+                  onClick={() => {
+                    onChange(val);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                    isSelected 
+                      ? 'bg-primary text-white font-bold' 
+                      : 'text-text-default hover:bg-background'
+                  }`}
+                >
+                  {lab}
+                </button>
+              );
+            })}
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
-export default ExpenseList;
+const ExpenseFilters = ({ month, year, onMonthChange, onYearChange }) => {
+  return (
+    <div className="flex flex-wrap items-center gap-4 mb-8">
+      <div className="flex items-center gap-2">
+        <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
+          <CalendarDays size={16} />
+        </div>
+        <span className="text-xs font-bold text-text-secondary uppercase tracking-widest shrink-0">Viewing Period</span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <CustomDropdown
+          label="Month"
+          value={month}
+          options={MONTHS}
+          onChange={onMonthChange}
+          width="w-44"
+        />
+        <CustomDropdown
+          label="Year"
+          value={year}
+          options={YEARS.map(y => ({ value: y, label: y.toString() }))}
+          onChange={onYearChange}
+          width="w-32"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default ExpenseFilters;
