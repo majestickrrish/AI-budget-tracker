@@ -4,6 +4,8 @@ const Demo = require('./models/Demo');
 
 const authRoutes = require('./routes/authRoutes');
 const testRoutes = require('./routes/testRoutes');
+const expenseRoutes = require('./routes/expenseRoutes');
+const analyticsRoutes = require('./routes/analyticsroutes');
 
 const app = express();
 
@@ -29,5 +31,7 @@ app.get('/api/test', async (req, res) => {
 // Auth routes
 app.use('/api/auth', authRoutes);
 app.use('/api/test', testRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 module.exports = app;
