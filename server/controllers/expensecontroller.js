@@ -116,7 +116,7 @@ const getExpenses = async (req, res) => {
 const updateExpense = async (req, res) => {
   try {
     const { id } = req.params;
-    const { amount, description, date, isRecurring } = req.body;
+    const { amount, description, date, isRecurring, category } = req.body;
 
     // Find expense and verify ownership
     const expense = await Expense.findOne({ _id: id, userId: req.userId });
@@ -142,10 +142,19 @@ const updateExpense = async (req, res) => {
     if (date !== undefined) expense.date = new Date(date);
     if (isRecurring !== undefined) expense.isRecurring = isRecurring;
 
-    // Re-run the same hybrid categorization flow if description changes
+    // Category Logic:
+    // 1. If a category is manually provided, use it.
+    // 2. If no category provided but description changed, re-classify.
+    if (category) {
+      expense.category = category;
+    }
+
     if (description !== undefined) {
       expense.description = description;
-      expense.category = categorizeExpense(description);
+      // Only auto-classify if the user didn't explicitly send a new category
+      if (!category) {
+        expense.category = categorizeExpense(description);
+      }
     }
 
     await expense.save();
