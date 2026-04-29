@@ -1,3 +1,4 @@
+// ─── ExpensesPage.jsx ────────────────────────────────────────────────────────
 import { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import ExpenseForm from '../components/ExpenseForm';
@@ -14,15 +15,14 @@ const ExpensesPage = () => {
 
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
-
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [editingExpense, setEditingExpense] = useState(null);
+
   const [shortcuts, setShortcuts] = useState(() => {
-    const saved = localStorage.getItem(SHORTCUT_KEY);
-    return saved ? JSON.parse(saved) : [];
+    try { return JSON.parse(localStorage.getItem(SHORTCUT_KEY)) || []; }
+    catch { return []; }
   });
 
   useEffect(() => {
@@ -30,62 +30,47 @@ const ExpensesPage = () => {
   }, [shortcuts, SHORTCUT_KEY]);
 
   const handleSaveShortcut = (expense) => {
-    const isDuplicate = shortcuts.some(s => 
-      s.description.toLowerCase() === expense.description.toLowerCase() && 
-      s.amount === expense.amount
+    const isDuplicate = shortcuts.some(
+      (s) =>
+        s.description.toLowerCase() === expense.description.toLowerCase() &&
+        s.amount === expense.amount
     );
     if (isDuplicate) return;
-
-    setShortcuts(prev => [{
-      id: Date.now(),
-      description: expense.description,
-      amount: expense.amount
-    }, ...prev].slice(0, 5)); // Keep last 5
+    setShortcuts((prev) =>
+      [{ id: Date.now(), description: expense.description, amount: expense.amount }, ...prev].slice(0, 5)
+    );
   };
 
-  const handleDeleteShortcut = (id) => {
-    setShortcuts(prev => prev.filter(s => s.id !== id));
-  };
+  const handleDeleteShortcut = (id) => setShortcuts((prev) => prev.filter((s) => s.id !== id));
 
-  // ─── Fetch Expenses ──────────────────────────────────────────────────────
   const fetchExpenses = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const res = await getExpenses({ month, year });
       setExpenses(res.data.data.expenses || []);
-    } catch (err) {
-      console.error('[fetchExpenses]', err);
+    } catch {
       setError('Could not load expenses. Is the backend running?');
     } finally {
       setLoading(false);
     }
   }, [month, year]);
 
-  useEffect(() => {
-    fetchExpenses();
-  }, [fetchExpenses]);
+  useEffect(() => { fetchExpenses(); }, [fetchExpenses]);
 
-  // ─── Add ─────────────────────────────────────────────────────────────────
-  // Called by ExpenseForm after a successful API call; prepend to list
-  const handleAdd = (newExpense) => {
-    setExpenses((prev) => [newExpense, ...prev]);
-  };
+  const handleAdd = (newExpense) => setExpenses((prev) => [newExpense, ...prev]);
 
-  // ─── Delete (Optimistic UI) ───────────────────────────────────────────────
   const handleDelete = async (id) => {
     const previous = expenses;
     setExpenses((prev) => prev.filter((e) => e._id !== id));
     try {
       await deleteExpense(id);
-    } catch (err) {
-      console.error('[handleDelete]', err);
-      setExpenses(previous); // rollback
+    } catch {
+      setExpenses(previous);
       alert('Failed to delete expense. Please try again.');
     }
   };
 
-  // ─── Edit ─────────────────────────────────────────────────────────────────
   const handleEdit = (expense) => setEditingExpense(expense);
 
   const handleEditSave = async (id, updatedData) => {
@@ -94,8 +79,7 @@ const ExpensesPage = () => {
       const updated = res.data.data.expense;
       setExpenses((prev) => prev.map((e) => (e._id === id ? updated : e)));
       setEditingExpense(null);
-    } catch (err) {
-      console.error('[handleEditSave]', err);
+    } catch {
       alert('Failed to update expense. Please try again.');
     }
   };
@@ -104,44 +88,48 @@ const ExpensesPage = () => {
 
   return (
     <Layout>
+      {/* Page header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-text-default">Expenses</h1>
-          <p className="text-text-secondary text-sm mt-1">
-            {loading ? 'Loading...' : `${expenses.length} expenses`} ·{' '}
-            {!loading && (
+          <h1 className="text-xl font-bold text-text-default">Expenses</h1>
+          <p className="text-text-secondary text-sm mt-0.5">
+            {loading ? (
+              <span className="opacity-60">Loading…</span>
+            ) : (
               <>
-                Total:{' '}
-                <span className="text-danger font-semibold">₹{total.toLocaleString()}</span>
+                {expenses.length} {expenses.length === 1 ? 'expense' : 'expenses'} ·{' '}
+                <span className="text-danger font-semibold">
+                  −₹{total.toLocaleString('en-IN')}
+                </span>
               </>
             )}
           </p>
         </div>
       </div>
 
-      {/* Month / Year filter dropdowns */}
-      <ExpenseFilters
-        month={month}
-        year={year}
-        onMonthChange={setMonth}
-        onYearChange={setYear}
+      {/* Filters */}
+      <ExpenseFilters month={month} year={year} onMonthChange={setMonth} onYearChange={setYear} />
+
+      {/* Form */}
+      <ExpenseForm
+        onAdd={handleAdd}
+        shortcuts={shortcuts}
+        onDeleteShortcut={handleDeleteShortcut}
       />
 
-      <ExpenseForm 
-        onAdd={handleAdd} 
-        shortcuts={shortcuts} 
-        onDeleteShortcut={handleDeleteShortcut} 
-      />
-
+      {/* Error */}
       {error && (
-        <div className="bg-danger/10 border border-danger/30 text-danger text-sm rounded-xl px-4 py-3 mb-4">
+        <div className="bg-danger/10 border border-danger/30 text-danger text-sm rounded-xl px-4 py-3 mb-4 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-danger shrink-0" />
           {error}
         </div>
       )}
 
+      {/* Loading state */}
       {loading ? (
-        <div className="bg-card border border-border-default rounded-2xl p-12 text-center">
-          <p className="text-text-secondary text-sm animate-pulse">Fetching expenses…</p>
+        <div className="bg-card border border-border-default rounded-xl p-12 text-center">
+          <div className="w-6 h-6 border-2 border-border-default border-t-primary rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-text-secondary text-sm">Fetching expenses…</p>
         </div>
       ) : (
         <ExpenseList
@@ -152,6 +140,7 @@ const ExpensesPage = () => {
         />
       )}
 
+      {/* Edit modal */}
       {editingExpense && (
         <EditExpenseModal
           expense={editingExpense}

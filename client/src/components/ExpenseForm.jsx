@@ -1,27 +1,25 @@
 import { useState } from 'react';
-import { Calendar, Zap, Coffee, ShoppingBag, Utensils, Car, X, Plus } from 'lucide-react';
+import { Calendar, Zap, X, Plus, Bookmark } from 'lucide-react';
 import { createExpense } from '../services/api';
 
 const today = () => new Date().toISOString().split('T')[0];
 
+const inputClass =
+  'w-full bg-background border border-border-default text-text-default placeholder-text-secondary/50 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all duration-150 hover:border-text-secondary/30';
+
 const ExpenseForm = ({ onAdd, shortcuts = [], onDeleteShortcut }) => {
-  const [form, setForm] = useState({
-    description: '',
-    amount: '',
-    date: today(),
-  });
+  const [form, setForm] = useState({ description: '', amount: '', date: today() });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    if (error) setError(null);
+  };
 
   const handleQuickAdd = (item) => {
-    setForm({
-      ...form,
-      description: item.description,
-      amount: item.amount.toString(),
-      date: today(),
-    });
+    setForm({ ...form, description: item.description, amount: item.amount.toString(), date: today() });
   };
 
   const handleSubmit = async (e) => {
@@ -36,11 +34,11 @@ const ExpenseForm = ({ onAdd, shortcuts = [], onDeleteShortcut }) => {
         amount: parseFloat(form.amount),
         date: form.date,
       });
-      const newExpense = res.data.data.expense;
-      onAdd(newExpense);
+      onAdd(res.data.data.expense);
       setForm({ description: '', amount: '', date: today() });
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 2000);
     } catch (err) {
-      console.error('[handleSubmit]', err);
       setError(err?.response?.data?.message || 'Failed to add expense. Please try again.');
     } finally {
       setLoading(false);
@@ -48,110 +46,155 @@ const ExpenseForm = ({ onAdd, shortcuts = [], onDeleteShortcut }) => {
   };
 
   return (
-    <div className="bg-card border border-border-default rounded-2xl p-6 mb-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div className="bg-card border border-border-default rounded-2xl overflow-hidden mb-6">
+      {/* Card header */}
+      <div className="px-6 py-4 border-b border-border-default flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-text-default font-semibold text-base">Add New Expense</h3>
-          <p className="text-xs text-text-secondary opacity-70 mt-0.5">Enter details or use a shortcut below</p>
+          <h3 className="text-sm font-bold text-text-default">Add New Expense</h3>
+          <p className="text-xs text-text-secondary mt-0.5 opacity-70">
+            Fill in the details below to record a transaction
+          </p>
         </div>
 
-        {shortcuts.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest bg-background px-2 py-1 rounded border border-border-default">Shortcuts</span>
-            <div className="flex flex-wrap gap-1.5">
-              {shortcuts.map((item) => (
-                <div key={item.id} className="group relative">
-                  <button
-                    type="button"
-                    onClick={() => handleQuickAdd(item)}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background border border-border-default hover:border-primary hover:text-primary transition-all text-xs font-medium text-text-default"
-                  >
-                    {item.description}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); onDeleteShortcut(item.id); }}
-                    className="absolute -top-1 -right-1 w-4 h-4 bg-danger text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-                  >
-                    <X size={10} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* AI badge */}
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-primary bg-primary/8 border border-primary/20 px-3 py-1.5 rounded-full self-start sm:self-auto shrink-0">
+          <Zap size={11} />
+          AI Category Detection
+        </div>
       </div>
 
-      {error && (
-        <div className="bg-danger/10 border border-danger/30 text-danger text-xs rounded-lg px-3 py-2 mb-4">
-          {error}
+      {/* Shortcuts strip */}
+      {shortcuts.length > 0 && (
+        <div className="px-6 py-3 border-b border-border-default bg-background/40 flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold text-text-secondary uppercase tracking-widest shrink-0">
+            <Bookmark size={10} />
+            Shortcuts
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {shortcuts.map((item) => (
+              <div key={item.id} className="group relative">
+                <button
+                  type="button"
+                  onClick={() => handleQuickAdd(item)}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-card border border-border-default hover:border-primary hover:text-primary transition-all duration-150 text-xs font-medium text-text-default"
+                >
+                  {item.description}
+                  <span className="text-text-secondary font-normal">₹{item.amount}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onDeleteShortcut(item.id); }}
+                  className="absolute -top-1 -right-1 w-4 h-4 bg-danger text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-sm"
+                  aria-label="Remove shortcut"
+                >
+                  <X size={9} />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      <form id="expense-form" onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        {/* Description */}
-        <div className="sm:col-span-2">
-          <label className="block text-xs font-medium text-text-secondary mb-1.5">Description</label>
-          <input
-            id="expense-description"
-            type="text"
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="e.g. Grocery shopping"
-            required
-            className="w-full bg-background border border-border-default text-text-default placeholder-text-secondary rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-          />
-        </div>
-
-        {/* Amount */}
-        <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1.5">Amount (₹)</label>
-          <input
-            id="expense-amount"
-            type="number"
-            name="amount"
-            value={form.amount}
-            onChange={handleChange}
-            placeholder="0"
-            required
-            className="w-full bg-background border border-border-default text-text-default placeholder-text-secondary rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-          />
-        </div>
-
-        {/* Date */}
-        <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1.5">Date</label>
-          <div className="relative">
-            <input
-              id="expense-date"
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              required
-              className="w-full bg-background border border-border-default text-text-default rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none"
-            />
-            <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary opacity-50 pointer-events-none" size={16} />
+      {/* Form body */}
+      <div className="px-6 py-5">
+        {error && (
+          <div className="bg-danger/10 border border-danger/30 text-danger text-xs rounded-xl px-4 py-2.5 mb-4 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-danger shrink-0" />
+            {error}
           </div>
-        </div>
+        )}
 
-        {/* AI categorization note + Submit */}
-        <div className="sm:col-span-4 flex items-center justify-between mt-2">
-          <div className="flex items-center gap-2 text-xs text-text-secondary opacity-70">
-            <Zap size={12} className="text-primary" />
-            <span>AI Category Detection Active</span>
+        {success && (
+          <div className="bg-success/10 border border-success/30 text-success text-xs rounded-xl px-4 py-2.5 mb-4 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-success shrink-0" />
+            Expense added successfully
           </div>
-          <button
-            id="add-expense-btn"
-            type="submit"
-            disabled={loading}
-            className="px-6 py-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-primary/20 flex items-center gap-2"
-          >
-            {loading ? 'Adding…' : <><Plus size={16} /> Add Expense</>}
-          </button>
-        </div>
-      </form>
+        )}
+
+        <form id="expense-form" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+            {/* Description — wider */}
+            <div className="sm:col-span-5">
+              <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
+                Description
+              </label>
+              <input
+                id="expense-description"
+                type="text"
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="e.g. Grocery shopping"
+                required
+                className={inputClass}
+              />
+            </div>
+
+            {/* Amount */}
+            <div className="sm:col-span-3">
+              <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
+                Amount (₹)
+              </label>
+              <input
+                id="expense-amount"
+                type="number"
+                name="amount"
+                value={form.amount}
+                onChange={handleChange}
+                placeholder="0"
+                min="0.01"
+                step="0.01"
+                required
+                className={inputClass}
+              />
+            </div>
+
+            {/* Date */}
+            <div className="sm:col-span-4">
+              <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
+                Date
+              </label>
+              <div className="relative">
+                <input
+                  id="expense-date"
+                  type="date"
+                  name="date"
+                  value={form.date}
+                  onChange={handleChange}
+                  required
+                  className={`${inputClass} pl-10`}
+                />
+                <Calendar
+                  size={14}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary opacity-50 pointer-events-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Submit row */}
+          <div className="flex items-center justify-end mt-4 pt-4 border-t border-border-default/50">
+            <button
+              id="add-expense-btn"
+              type="submit"
+              disabled={loading}
+              className="px-6 py-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-all duration-150 shadow-sm flex items-center gap-2 min-h-[44px]"
+            >
+              {loading ? (
+                <>
+                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Adding…
+                </>
+              ) : (
+                <>
+                  <Plus size={15} />
+                  Add Expense
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
