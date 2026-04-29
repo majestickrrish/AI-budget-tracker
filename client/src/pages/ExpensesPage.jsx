@@ -5,9 +5,13 @@ import ExpenseList from '../components/ExpenseList';
 import ExpenseFilters from '../components/ExpenseFilters';
 import EditExpenseModal from '../components/EditExpenseModal';
 import { getExpenses, deleteExpense, updateExpense } from '../services/api';
+import { getUser } from '../utils/auth';
 
 const ExpensesPage = () => {
   const now = new Date();
+  const user = getUser();
+  const SHORTCUT_KEY = user ? `expense_shortcuts_${user._id}` : 'expense_shortcuts_guest';
+
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
 
@@ -17,13 +21,13 @@ const ExpensesPage = () => {
 
   const [editingExpense, setEditingExpense] = useState(null);
   const [shortcuts, setShortcuts] = useState(() => {
-    const saved = localStorage.getItem('expense_shortcuts');
+    const saved = localStorage.getItem(SHORTCUT_KEY);
     return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('expense_shortcuts', JSON.stringify(shortcuts));
-  }, [shortcuts]);
+    localStorage.setItem(SHORTCUT_KEY, JSON.stringify(shortcuts));
+  }, [shortcuts, SHORTCUT_KEY]);
 
   const handleSaveShortcut = (expense) => {
     const isDuplicate = shortcuts.some(s => 

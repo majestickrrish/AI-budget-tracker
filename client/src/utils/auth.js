@@ -6,7 +6,9 @@ const USER_KEY = 'budget_tracker_user';
 
 export const setCredentials = (token, user) => {
   localStorage.setItem(TOKEN_KEY, token);
-  // Strictly keeping user out of localStorage as per team instructions!
+  if (user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  }
 };
 
 export const logout = () => {
