@@ -11,6 +11,28 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Response interceptor to catch critical system failures
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response ? error.response.status : null;
+    
+    // If it's a 500+ error or a network failure (no response)
+    if (!status || status >= 500) {
+      const event = new CustomEvent('app_error', { 
+        detail: { 
+          type: 'system_failure', 
+          severity: 'fatal',
+          message: error.message 
+        } 
+      });
+      window.dispatchEvent(event);
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
 // ─── Auth ──────────────────────────────────────────────────────────────────
 export const loginUser = async (email, password) => {
   return api.post('/auth/login', { email, password });

@@ -10,6 +10,8 @@ import InsightsPage from './pages/InsightsPage';
 import GoalsPage from './pages/GoalsPage';
 import ProfilePage from './pages/ProfilePage';
 import { isAuthenticated, getUser } from './utils/auth';
+import { LoadingScreen, ErrorScreen } from './components/StatusScreens';
+import { useState, useEffect } from 'react';
 
 // ─── Onboarding Gate ─────────────────────────────────────────────────────────
 // Checks if the authenticated user has completed onboarding.
@@ -35,6 +37,43 @@ const OnboardingGate = ({ children }) => {
 };
 
 function App() {
+  const [initializing, setInitializing] = useState(true);
+  const [systemError, setSystemError] = useState(null);
+
+  useEffect(() => {
+    // Simulate initial data fetching and auth check
+    const timeout = setTimeout(() => {
+      setInitializing(false);
+    }, 1500);
+
+    // Global listener for system failures (API crashes, etc.)
+    const handleSystemError = (e) => {
+      if (e.detail?.type === 'system_failure') {
+        setSystemError(e.detail);
+      }
+    };
+    window.addEventListener('app_error', handleSystemError);
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('app_error', handleSystemError);
+    };
+  }, []);
+
+  if (systemError) {
+    return (
+      <ErrorScreen 
+        type={systemError.severity === 'fatal' ? 'server' : 'general'} 
+        error={systemError}
+        resetAction={() => window.location.reload()}
+      />
+    );
+  }
+
+  if (initializing) {
+    return <LoadingScreen message="Securing your financial data..." />;
+  }
+
   return (
     <BrowserRouter>
       <Routes>

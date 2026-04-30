@@ -60,18 +60,18 @@ const DashboardStat = ({ icon: Icon, label, value, sub, accent = 'primary', delt
     neutral: 'bg-border-default text-text-secondary',
   };
   return (
-    <div className="bg-card border border-border-default rounded-xl p-5 flex items-start gap-4 hover:shadow-sm hover:border-border-default/80 transition-all duration-150 min-w-0">
+    <div className="bg-card border border-border-default rounded-xl p-5 flex items-center gap-4 hover:shadow-sm hover:border-border-default/80 transition-all duration-150 min-w-0">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${accentMap[accent]}`}>
         <Icon size={18} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1">{label}</p>
-        <p className="text-lg font-bold text-text-default break-words leading-snug">{value}</p>
-        {sub && <p className="text-xs text-text-secondary mt-1 opacity-70 truncate">{sub}</p>}
+        <p className="text-lg font-bold text-text-default break-words leading-tight">{value}</p>
+        {sub && <p className="text-[10px] sm:text-xs text-text-secondary mt-1 opacity-70 truncate">{sub}</p>}
         {delta !== undefined && (
           <div className={`flex items-center gap-1 mt-1 text-xs font-semibold ${delta >= 0 ? 'text-danger' : 'text-success'}`}>
             {delta >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-            {Math.abs(delta)}% vs last month
+            {Math.abs(delta)}%
           </div>
         )}
       </div>
@@ -227,7 +227,6 @@ const DashboardPage = () => {
   const hasExpenses = expenses.length > 0;
   const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
   const avgPerTx = hasExpenses ? totalSpent / expenses.length : 0;
-  const budgetUsedPct = monthlyBudget > 0 ? Math.round((totalSpent / monthlyBudget) * 100) : null;
 
   const categoryTotals = expenses.reduce((acc, e) => {
     acc[e.category] = (acc[e.category] || 0) + e.amount;
@@ -235,7 +234,6 @@ const DashboardPage = () => {
   }, {});
   const sortedCategories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
   const topCategory = sortedCategories[0];
-  const maxCategoryAmt = topCategory ? topCategory[1] : 1;
 
   const daysInMonth = new Date(year, month, 0).getDate();
   const dailyTotals = Array(daysInMonth).fill(0);
@@ -341,7 +339,7 @@ const DashboardPage = () => {
     };
     initCharts();
     return () => { lineChart.current?.destroy(); donutChart.current?.destroy(); };
-  }, [loading, expenses, month, year]);
+  }, [loading, expenses, month, year, monthLabel, dailyTotals, daysInMonth, sortedCategories]);
 
   return (
     <>
@@ -403,23 +401,21 @@ const DashboardPage = () => {
 
       {loading && (
         <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-44" />)}
           </div>
+          <Skeleton className="h-32 rounded-xl" />
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
             <Skeleton className="lg:col-span-3 h-64" />
             <Skeleton className="lg:col-span-2 h-64" />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Skeleton className="lg:col-span-2 h-72" />
-            <Skeleton className="h-72" />
           </div>
         </div>
       )}
 
       {!loading && (
         <div className="space-y-4 pb-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Top Row: Core Facts */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <DashboardStat
               icon={DollarSign} label="Total Spent" accent="danger"
               value={`₹${totalSpent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
@@ -435,28 +431,24 @@ const DashboardPage = () => {
               value={topCategory ? topCategory[0] : '—'}
               sub={topCategory ? `${Math.round((topCategory[1] / totalSpent) * 100)}% of total` : 'No data'}
             />
-            <DashboardStat
-              icon={Brain} label="AI Prediction" accent="neutral"
-              value={predictedTotal ? `₹${Math.round(predictedTotal).toLocaleString('en-IN')}` : '—'}
-              sub={predictedTotal ? 'Projected month-end total' : 'Add more data for prediction'}
-            />
           </div>
 
-          {monthlyBudget > 0 && (
-            <div className="bg-card border border-border-default rounded-xl p-5">
+          {/* Budget & Prediction Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 bg-card border border-border-default rounded-xl p-5">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <Target size={14} className="text-primary" />
                   <span className="text-sm font-bold text-text-default">Budget Progress</span>
                 </div>
-                <span className={`text-xs font-bold px-2 py-1 rounded-lg ${budgetUsedPct > 90 ? 'bg-danger/10 text-danger' : budgetUsedPct > 70 ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success'}`}>
-                  {budgetUsedPct ?? 0}% used
+                <span className={`text-xs font-bold px-2 py-1 rounded-lg ${Math.round((totalSpent / monthlyBudget) * 100) > 90 ? 'bg-danger/10 text-danger' : Math.round((totalSpent / monthlyBudget) * 100) > 70 ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success'}`}>
+                  {Math.round((totalSpent / monthlyBudget) * 100)}% used
                 </span>
               </div>
               <div className="h-2 bg-background rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-700 ease-out ${budgetUsedPct > 90 ? 'bg-danger' : budgetUsedPct > 70 ? 'bg-warning' : 'bg-success'}`}
-                  style={{ width: `${Math.min(100, budgetUsedPct || 0)}%` }}
+                  className={`h-full rounded-full transition-all duration-700 ease-out ${Math.round((totalSpent / monthlyBudget) * 100) > 90 ? 'bg-danger' : Math.round((totalSpent / monthlyBudget) * 100) > 70 ? 'bg-warning' : 'bg-success'}`}
+                  style={{ width: `${Math.min(100, Math.round((totalSpent / monthlyBudget) * 100))}%` }}
                 />
               </div>
               <div className="flex items-center justify-between mt-2">
@@ -464,8 +456,21 @@ const DashboardPage = () => {
                 <span className="text-xs text-text-secondary">₹{monthlyBudget.toLocaleString('en-IN')} budget</span>
               </div>
             </div>
-          )}
 
+            <div className="lg:col-span-1 bg-card border border-border-default rounded-xl p-5 flex flex-col justify-center">
+              <div className="flex items-center gap-2 mb-2">
+                <Brain size={14} className="text-primary" />
+                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">AI Forecast</span>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-xl font-black text-text-default">₹{Math.round(predictedTotal || 0).toLocaleString('en-IN')}</span>
+                <span className="text-[10px] text-text-secondary font-medium">projected</span>
+              </div>
+              <p className="text-[10px] text-text-secondary mt-1 opacity-60">Estimated month-end total</p>
+            </div>
+          </div>
+
+          {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
             <div className="lg:col-span-3 bg-card border border-border-default rounded-xl p-5 min-h-[280px] flex flex-col">
               <SectionHeader icon={TrendingUp} title="Daily Spending Trend" />
@@ -485,7 +490,9 @@ const DashboardPage = () => {
             </div>
           </div>
 
+          {/* Bottom Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Recent Transactions */}
             <div className="lg:col-span-2 bg-card border border-border-default rounded-xl overflow-hidden flex flex-col min-h-[320px]">
               <div className="px-5 py-4 border-b border-border-default flex items-center justify-between shrink-0">
                 <h3 className="text-sm font-bold text-text-default">Recent Transactions</h3>
@@ -519,6 +526,7 @@ const DashboardPage = () => {
               </div>
             </div>
 
+            {/* Analysis Side */}
             <div className="flex flex-col gap-4">
               <div className="bg-card border border-border-default rounded-xl p-5 flex flex-col items-center">
                 <SectionHeader icon={Heart} title="Financial Health" />
@@ -534,22 +542,28 @@ const DashboardPage = () => {
                 )}
               </div>
 
-              {insights.length > 0 && (
-                <div className="bg-card border border-border-default rounded-xl p-5 flex-1">
-                  <SectionHeader icon={Zap} title="AI Insights" />
-                  <div className="space-y-3">
-                    {insights.map((ins, i) => (
+              <div className="bg-card border border-border-default rounded-xl p-5 flex-1 flex flex-col">
+                <SectionHeader icon={Zap} title="AI Analysis" />
+                
+                <div className="space-y-3 flex-1">
+                  {insights.length > 0 ? (
+                    insights.map((ins, i) => (
                       <div key={i} className="flex items-start gap-2.5">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-                        <p className="text-xs text-text-secondary leading-relaxed">{ins?.message || ins?.insight || String(ins)}</p>
+                        <p className="text-xs text-text-secondary leading-relaxed">
+                          {ins?.message || ins?.insight || String(ins)}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                  <Link to="/insights" className="flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary-hover mt-4 group transition-colors">
-                    Full Analysis <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform duration-150" />
-                  </Link>
+                    ))
+                  ) : (
+                    <p className="text-xs text-text-secondary opacity-50 italic">Waiting for more data to generate insights...</p>
+                  )}
                 </div>
-              )}
+
+                <Link to="/insights" className="flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary-hover mt-6 group transition-colors pt-4 border-t border-border-default">
+                  Full AI Analysis <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform duration-150" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
