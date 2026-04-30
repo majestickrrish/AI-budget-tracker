@@ -3,8 +3,8 @@ const cors = require('cors');
 const Demo = require('./models/Demo');
 
 const authRoutes = require('./routes/authRoutes');
-const testRoutes = require('./routes/testRoutes');
-const expenseRoutes = require('./routes/expenseRoutes');
+const testRoutes = require('./routes/testroutes');
+const expenseRoutes = require('./routes/expenseroutes');
 const analyticsRoutes = require('./routes/analyticsroutes');
 
 const app = express();
