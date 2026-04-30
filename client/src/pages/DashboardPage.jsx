@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import {
   TrendingUp, PieChart as PieChartIcon, ArrowRight, DollarSign,
   Activity, Layers, Inbox, AlertCircle, Brain, Heart, Zap, Target,
-  ArrowUpRight, ArrowDownRight, ShieldAlert, ChevronDown
+  ArrowUpRight, ArrowDownRight, ShieldAlert, ChevronDown,
+  Utensils, ShoppingCart, Car, Film, Stethoscope, GraduationCap, Plane, ShoppingBag, Box
 } from 'lucide-react';
 import { 
   getExpenses, 
@@ -17,16 +18,16 @@ import {
 import { getUser } from '../utils/auth';
 
 const CATEGORY_CONFIG = {
-  'Food & Dining': { color: '#D85A30', bg: 'bg-orange-100 dark:bg-orange-900/30', emoji: '🍕' },
-  'Groceries': { color: '#639922', bg: 'bg-green-100 dark:bg-green-900/30', emoji: '🛒' },
-  'Transport': { color: '#378ADD', bg: 'bg-blue-100 dark:bg-blue-900/30', emoji: '🚕' },
-  'Entertainment': { color: '#BA7517', bg: 'bg-yellow-100 dark:bg-yellow-900/30', emoji: '🎬' },
-  'Health & Medical': { color: '#E24B4A', bg: 'bg-red-100 dark:bg-red-900/30', emoji: '💊' },
-  'Education': { color: '#378ADD', bg: 'bg-blue-100 dark:bg-blue-900/30', emoji: '📚' },
-  'Bills & Utilities': { color: '#1D9E75', bg: 'bg-teal-100 dark:bg-teal-900/30', emoji: '⚡' },
-  'Travel': { color: '#7F77DD', bg: 'bg-purple-100 dark:bg-purple-900/30', emoji: '✈️' },
-  'Shopping': { color: '#D4537E', bg: 'bg-pink-100 dark:bg-pink-900/30', emoji: '🛍️' },
-  'Other': { color: '#888780', bg: 'bg-gray-100 dark:bg-gray-900/30', emoji: '📦' },
+  'Food & Dining': { color: '#D85A30', bg: 'bg-orange-100 dark:bg-orange-900/30', icon: Utensils },
+  'Groceries': { color: '#639922', bg: 'bg-green-100 dark:bg-green-900/30', icon: ShoppingCart },
+  'Transport': { color: '#378ADD', bg: 'bg-blue-100 dark:bg-blue-900/30', icon: Car },
+  'Entertainment': { color: '#BA7517', bg: 'bg-yellow-100 dark:bg-yellow-900/30', icon: Film },
+  'Health & Medical': { color: '#E24B4A', bg: 'bg-red-100 dark:bg-red-900/30', icon: Stethoscope },
+  'Education': { color: '#378ADD', bg: 'bg-blue-100 dark:bg-blue-100/10', icon: GraduationCap },
+  'Bills & Utilities': { color: '#1D9E75', bg: 'bg-teal-100 dark:bg-teal-900/30', icon: Zap },
+  'Travel': { color: '#7F77DD', bg: 'bg-purple-100 dark:bg-purple-900/30', icon: Plane },
+  'Shopping': { color: '#D4537E', bg: 'bg-pink-100 dark:bg-pink-900/30', icon: ShoppingBag },
+  'Other': { color: '#888780', bg: 'bg-gray-100 dark:bg-gray-900/30', icon: Box },
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -497,9 +498,12 @@ const DashboardPage = () => {
                   <div className="divide-y divide-border-default">
                     {recentExpenses.map((e) => {
                       const cfg = CATEGORY_CONFIG[e.category] || CATEGORY_CONFIG['Other'];
+                      const Icon = cfg.icon;
                       return (
                         <div key={e._id} className="flex items-center gap-3 px-5 py-3.5 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors duration-150">
-                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0 ${cfg.bg}`}>{cfg.emoji}</div>
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0 ${cfg.bg}`}>
+                            <Icon size={16} />
+                          </div>
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-semibold text-text-default truncate leading-tight">{e.description}</p>
                             <p className="text-xs text-text-secondary mt-0.5 opacity-70 truncate">{e.category} · {new Date(e.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</p>

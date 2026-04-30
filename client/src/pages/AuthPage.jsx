@@ -63,7 +63,7 @@ const AuthPage = () => {
     setRegLoading(true);
     try {
       await registerUser(name, email, password, confirmPassword);
-      setRegSuccess('Account created successfully! 🎉 Please sign in.');
+      setRegSuccess('Account created successfully! Please sign in.');
       setMode('login');
       setRegForm({ name: '', email: '', password: '', confirmPassword: '' });
     } catch (err) {

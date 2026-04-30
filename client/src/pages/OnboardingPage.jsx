@@ -1,17 +1,17 @@
 // ─── OnboardingPage.jsx ──────────────────────────────────────────────────────
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Wallet, Target, Receipt, ChevronRight, ChevronLeft, Check, Plus, X, Zap, Calendar } from 'lucide-react';
+import { Wallet, Target, Receipt, ChevronRight, ChevronLeft, Check, Plus, X, Zap, Calendar, Home, Wifi, Smartphone, ShieldCheck, Dumbbell, Brain } from 'lucide-react';
 import { getUser, setCredentials } from '../utils/auth';
 import { updateProfile } from '../services/api';
 
 const FIXED_EXPENSE_SUGGESTIONS = [
-    { label: 'Rent / EMI', icon: '🏠' },
-    { label: 'Internet', icon: '📡' },
-    { label: 'Electricity', icon: '⚡' },
-    { label: 'Subscriptions', icon: '📱' },
-    { label: 'Insurance', icon: '🛡️' },
-    { label: 'Gym', icon: '💪' },
+    { label: 'Rent / EMI', icon: Home },
+    { label: 'Internet', icon: Wifi },
+    { label: 'Electricity', icon: Zap },
+    { label: 'Subscriptions', icon: Smartphone },
+    { label: 'Insurance', icon: ShieldCheck },
+    { label: 'Gym', icon: Dumbbell },
 ];
 
 const inputCls =
@@ -117,7 +117,7 @@ const OnboardingPage = () => {
                             <Wallet size={28} />
                         </div>
                         <h1 className="text-2xl font-black text-text-default mb-2">
-                            Welcome{user?.name ? `, ${user.name.split(' ')[0]}` : ''}! 👋
+                            Welcome{user?.name ? `, ${user.name.split(' ')[0]}` : ''}!
                         </h1>
                         <p className="text-text-secondary text-sm leading-relaxed mb-2">
                             Let's set up your AI-powered financial dashboard in just a few steps.
@@ -127,12 +127,14 @@ const OnboardingPage = () => {
                         </p>
                         <div className="grid grid-cols-3 gap-3 mb-8">
                             {[
-                                { emoji: '🤖', title: 'AI Insights', desc: 'Smart analysis of your spending' },
-                                { emoji: '🎯', title: 'Budget Goals', desc: 'Set and track monthly targets' },
-                                { emoji: '⚡', title: 'Auto Categories', desc: 'Expenses sorted automatically' },
+                                { icon: Brain, title: 'AI Insights', desc: 'Smart analysis of your spending' },
+                                { icon: Target, title: 'Budget Goals', desc: 'Set and track monthly targets' },
+                                { icon: Zap, title: 'Auto Categories', desc: 'Expenses sorted automatically' },
                             ].map((f) => (
                                 <div key={f.title} className="bg-background border border-border-default rounded-xl p-3 text-center">
-                                    <div className="text-2xl mb-1.5">{f.emoji}</div>
+                                    <div className="flex justify-center mb-1.5 text-primary">
+                                        <f.icon size={20} />
+                                    </div>
                                     <p className="text-xs font-bold text-text-default mb-0.5">{f.title}</p>
                                     <p className="text-[10px] text-text-secondary opacity-70 leading-relaxed">{f.desc}</p>
                                 </div>
@@ -247,17 +249,20 @@ const OnboardingPage = () => {
                         <div className="mb-4">
                             <p className="text-xs font-bold text-text-secondary uppercase tracking-widest mb-2">Quick Add</p>
                             <div className="flex flex-wrap gap-2">
-                                {FIXED_EXPENSE_SUGGESTIONS.map((s) => (
-                                    <button
-                                        key={s.label}
-                                        type="button"
-                                        onClick={() => setNewFixed({ ...newFixed, label: s.label })}
-                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all
-                      ${newFixed.label === s.label ? 'bg-primary/10 border-primary text-primary' : 'bg-background border-border-default text-text-secondary hover:border-primary hover:text-primary'}`}
-                                    >
-                                        {s.icon} {s.label}
-                                    </button>
-                                ))}
+                                {FIXED_EXPENSE_SUGGESTIONS.map((s) => {
+                                    const Icon = s.icon;
+                                    return (
+                                        <button
+                                            key={s.label}
+                                            type="button"
+                                            onClick={() => setNewFixed({ ...newFixed, label: s.label })}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all
+                                              ${newFixed.label === s.label ? 'bg-primary/10 border-primary text-primary' : 'bg-background border-border-default text-text-secondary hover:border-primary hover:text-primary'}`}
+                                        >
+                                            <Icon size={12} /> {s.label}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -351,7 +356,7 @@ const OnboardingPage = () => {
                         <div className="w-16 h-16 bg-success/10 border border-success/20 rounded-full flex items-center justify-center mx-auto mb-5 text-success">
                             <Check size={28} />
                         </div>
-                        <h2 className="text-2xl font-black text-text-default mb-2">You're all set! 🎉</h2>
+                        <h2 className="text-2xl font-black text-text-default mb-2">You're all set!</h2>
                         <p className="text-text-secondary text-sm mb-6 leading-relaxed">
                             Your AI financial assistant is ready. Here's a summary of your setup:
                         </p>
