@@ -1,20 +1,56 @@
 // ─── ExpensesPage.jsx ────────────────────────────────────────────────────────
 import { useState, useEffect, useCallback } from 'react';
-import Layout from '../components/Layout';
 import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
 import ExpenseFilters from '../components/ExpenseFilters';
 import EditExpenseModal from '../components/EditExpenseModal';
-import { getExpenses, deleteExpense, updateExpense } from '../services/api';
+import { 
+  getExpenses, 
+  deleteExpense, 
+  updateExpense,
+  getAnalyticsSummary,
+  getAIPredictions,
+  getHealthScore,
+  getAIInsights,
+  getAnomalies
+} from '../services/api';
 import { getUser } from '../utils/auth';
+
+// Silently re-fetch analytics in background after expense changes
+const refreshAnalytics = async () => {
+  try {
+    const now = new Date();
+    await Promise.allSettled([
+      getAnalyticsSummary({ month: now.getMonth() + 1, year: now.getFullYear() }),
+      getAIPredictions(),
+      getHealthScore({ month: now.getMonth() + 1, year: now.getFullYear() }),
+      getAIInsights({ month: now.getMonth() + 1, year: now.getFullYear() }),
+      getAnomalies(),
+    ]);
+  } catch {
+    // Silent fail — analytics refresh is best-effort
+  }
+};
 
 const ExpensesPage = () => {
   const now = new Date();
   const user = getUser();
   const SHORTCUT_KEY = user ? `expense_shortcuts_${user._id}` : 'expense_shortcuts_guest';
 
-  const [month, setMonth] = useState(now.getMonth() + 1);
-  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(() => {
+    const saved = localStorage.getItem('global_filter_month');
+    return saved ? parseInt(saved) : now.getMonth() + 1;
+  });
+  const [year, setYear] = useState(() => {
+    const saved = localStorage.getItem('global_filter_year');
+    return saved ? parseInt(saved) : now.getFullYear();
+  });
+
+  useEffect(() => {
+    localStorage.setItem('global_filter_month', month);
+    localStorage.setItem('global_filter_year', year);
+  }, [month, year]);
+
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -48,7 +84,7 @@ const ExpensesPage = () => {
     setError(null);
     try {
       const res = await getExpenses({ month, year });
-      setExpenses(res.data.data.expenses || []);
+      setExpenses(res?.data?.data?.expenses || []);
     } catch {
       setError('Could not load expenses. Is the backend running?');
     } finally {
@@ -58,13 +94,18 @@ const ExpensesPage = () => {
 
   useEffect(() => { fetchExpenses(); }, [fetchExpenses]);
 
-  const handleAdd = (newExpense) => setExpenses((prev) => [newExpense, ...prev]);
+  const handleAdd = (newExpense) => {
+    setExpenses((prev) => [newExpense, ...prev]);
+    // Trigger analytics refresh in background
+    refreshAnalytics();
+  };
 
   const handleDelete = async (id) => {
     const previous = expenses;
     setExpenses((prev) => prev.filter((e) => e._id !== id));
     try {
       await deleteExpense(id);
+      refreshAnalytics(); // re-fetch analytics after delete
     } catch {
       setExpenses(previous);
       alert('Failed to delete expense. Please try again.');
@@ -76,9 +117,10 @@ const ExpensesPage = () => {
   const handleEditSave = async (id, updatedData) => {
     try {
       const res = await updateExpense(id, updatedData);
-      const updated = res.data.data.expense;
+      const updated = res?.data?.data?.expense;
       setExpenses((prev) => prev.map((e) => (e._id === id ? updated : e)));
       setEditingExpense(null);
+      refreshAnalytics(); // re-fetch analytics after update
     } catch {
       alert('Failed to update expense. Please try again.');
     }
@@ -87,9 +129,9 @@ const ExpensesPage = () => {
   const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 
   return (
-    <Layout>
+    <>
       {/* Page header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-xl font-bold text-text-default">Expenses</h1>
           <p className="text-text-secondary text-sm mt-0.5">
@@ -105,10 +147,8 @@ const ExpensesPage = () => {
             )}
           </p>
         </div>
+        <ExpenseFilters month={month} year={year} onMonthChange={setMonth} onYearChange={setYear} />
       </div>
-
-      {/* Filters */}
-      <ExpenseFilters month={month} year={year} onMonthChange={setMonth} onYearChange={setYear} />
 
       {/* Form */}
       <ExpenseForm
@@ -148,7 +188,7 @@ const ExpensesPage = () => {
           onSave={handleEditSave}
         />
       )}
-    </Layout>
+    </>
   );
 };
 

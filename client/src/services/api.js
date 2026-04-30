@@ -44,3 +44,19 @@ export const deleteExpense = async (id) => {
 export const updateExpense = async (id, expenseData) => {
   return api.patch(`/expenses/${id}`, expenseData);
 };
+
+// ─── Analytics ────────────────────────────────────────────────────────────
+export const getAnalyticsSummary = (params) => api.get('/analytics/summary', { params });
+export const getAIPredictions = () => api.get('/analytics/prediction');
+export const getAnomalies = () => api.get('/analytics/anomalies');
+export const getAIInsights = (params) => api.get('/analytics/insights', { params });
+export const getHealthScore = (params) => api.get('/analytics/health-score', { params });
+
+// ─── User Profile ──────────────────────────────────────────────────────────
+export const updateProfile = (profileData) => api.put('/user/profile', profileData);
+
+// ─── Savings Goals ─────────────────────────────────────────────────────────
+export const getGoals = () => api.get('/goals');
+export const createGoal = (goalData) => api.post('/goals', goalData);
+export const updateGoal = (id, goalData) => api.patch(`/goals/${id}`, goalData);
+export const deleteGoal = (id) => api.delete(`/goals/${id}`);

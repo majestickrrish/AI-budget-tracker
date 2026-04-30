@@ -31,6 +31,7 @@ const AuthPage = () => {
   const [regForm, setRegForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [regError, setRegError] = useState('');
   const [regLoading, setRegLoading] = useState(false);
+  const [regSuccess, setRegSuccess] = useState('');
 
   // ── Password Visibility State ────────────────────────────────────────────
   const [showPassword, setShowPassword] = useState(false);
@@ -61,10 +62,10 @@ const AuthPage = () => {
     if (password !== confirmPassword) { setRegError('Passwords do not match.'); return; }
     setRegLoading(true);
     try {
-      const res = await registerUser(name, email, password, confirmPassword);
-      const { token, user } = res.data.data;
-      setCredentials(token, user);
-      navigate('/dashboard');
+      await registerUser(name, email, password, confirmPassword);
+      setRegSuccess('Account created successfully! 🎉 Please sign in.');
+      setMode('login');
+      setRegForm({ name: '', email: '', password: '', confirmPassword: '' });
     } catch (err) {
       setRegError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally { setRegLoading(false); }
@@ -77,7 +78,13 @@ const AuthPage = () => {
 
   // ── Sign In form (reused in both mobile and desktop) ─────────────────────
   const signInFormContent = (
-    <form id="login-form" onSubmit={handleLogin} className="w-full flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-4">
+      {regSuccess && (
+        <div className="bg-success/10 border border-success/30 text-success text-[11px] font-bold py-2.5 px-4 rounded-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300 mb-2">
+          <Rocket size={14} /> {regSuccess}
+        </div>
+      )}
+      <form id="login-form" onSubmit={handleLogin} className="w-full flex flex-col gap-4">
       <input id="login-email" type="email" value={loginForm.email}
         onChange={e => setLoginForm({ ...loginForm, email: e.target.value })}
         placeholder="Email" autoComplete="email" className={inputCls} />
@@ -97,6 +104,7 @@ const AuthPage = () => {
         {loginLoading ? 'Signing in…' : 'Sign In'}
       </button>
     </form>
+    </div>
   );
 
   // ── Sign Up form ──────────────────────────────────────────────────────────
