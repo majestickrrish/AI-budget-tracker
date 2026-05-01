@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Bell, CheckCircle2, AlertCircle, ChevronRight } from 'lucide-react';
+import { Calendar, Bell, CheckCircle2, AlertCircle, ChevronRight, X } from 'lucide-react';
 import { getUser } from '../utils/auth';
 
-const RemindersBar = () => {
+const RemindersBar = ({ onClose }) => {
   const user = getUser();
   const userId = user?._id || 'guest';
-  
+
   // For now, we fetch from localStorage as a fallback until the backend teammate adds the profile API
   const [onboarding, setOnboarding] = useState(() => {
     try {
@@ -16,11 +16,11 @@ const RemindersBar = () => {
   });
 
   const fixedExpenses = onboarding?.fixedExpenses || [];
-  
+
   if (fixedExpenses.length === 0) return null;
 
   const today = new Date().getDate();
-  
+
   // Sort expenses by closeness to today
   const sortedExpenses = [...fixedExpenses].sort((a, b) => {
     const dayA = a.dueDate || 1;
@@ -29,17 +29,30 @@ const RemindersBar = () => {
   });
 
   return (
-    <div className="bg-card border border-border-default rounded-2xl overflow-hidden shadow-sm h-fit">
-      <div className="px-5 py-4 border-b border-border-default bg-primary/5 flex items-center justify-between">
+    <div className={`
+      ${onClose ? 'bg-card/90' : 'bg-card'} 
+      border border-border-default rounded-2xl overflow-hidden shadow-sm h-fit
+    `}>
+      <div className="px-5 py-4 border-b border-border-default bg-gradient-to-r from-primary/10 to-transparent flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Bell size={16} className="text-primary" />
           <h3 className="text-sm font-bold text-text-default">Bill Reminders</h3>
         </div>
-        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-          Monthly
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+            Monthly
+          </span>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors text-text-secondary"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
       </div>
-      
+
       <div className="p-2 space-y-1">
         {sortedExpenses.map((expense, idx) => {
           const dueDate = expense.dueDate || 1;
@@ -48,18 +61,16 @@ const RemindersBar = () => {
           const isUpcoming = dueDate > today && dueDate <= today + 5;
 
           return (
-            <div 
-              key={`${expense.label}-${idx}`} 
-              className={`flex items-center justify-between p-3 rounded-xl transition-all hover:bg-background group ${
-                isToday ? 'bg-warning/5 border border-warning/20' : ''
-              }`}
+            <div
+              key={`${expense.label}-${idx}`}
+              className={`flex items-center justify-between p-3 rounded-xl transition-all hover:bg-primary/5 group border border-transparent ${isToday ? 'bg-warning/10 border-warning/30 shadow-[0_0_15px_-5px_rgba(245,158,11,0.2)]' : ''
+                }`}
             >
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                  isOverdue ? 'bg-danger/10 text-danger' : 
-                  isToday ? 'bg-warning/10 text-warning' : 
-                  'bg-success/10 text-success'
-                }`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isOverdue ? 'bg-danger/10 text-danger' :
+                    isToday ? 'bg-warning/10 text-warning' :
+                      'bg-success/10 text-success'
+                  }`}>
                   <Calendar size={14} />
                 </div>
                 <div>
@@ -71,7 +82,7 @@ const RemindersBar = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="text-right">
                 <p className="text-xs font-black text-text-default">
                   ₹{Number(expense.amount).toLocaleString('en-IN')}
@@ -88,7 +99,7 @@ const RemindersBar = () => {
           );
         })}
       </div>
-      
+
       <button className="w-full py-3 px-4 text-[11px] font-bold text-text-secondary hover:text-primary transition-colors flex items-center justify-center gap-1 border-t border-border-default opacity-60">
         Manage Subscriptions <ChevronRight size={12} />
       </button>

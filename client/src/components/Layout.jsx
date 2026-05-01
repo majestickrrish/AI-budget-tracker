@@ -5,7 +5,7 @@ import { logout, getUser } from '../utils/auth';
 import ThemeToggle from './ThemeToggle';
 import { Wallet, LayoutDashboard, ReceiptText, Bot, LogOut, X, Target, ChevronRight } from 'lucide-react';
 
-import RemindersBar from './RemindersBar';
+import FloatingReminders from './FloatingReminders';
 
 const navItems = [
   { to: '/dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
@@ -168,20 +168,15 @@ const Layout = ({ children }) => {
         </header>
 
         {/* Dynamic Layout Wrapper */}
-        <div className="flex flex-col xl:flex-row flex-1 min-w-0">
-          
+        <div className="flex-1 min-w-0">
           {/* Central Main Page Content (Keyed by Path) */}
-          <main key={location.pathname} className="flex-1 p-4 sm:p-6 lg:p-8 xl:p-10 min-w-0 animate-in fade-in duration-300">
+          <main key={location.pathname} className="h-full p-4 sm:p-6 lg:p-8 xl:p-10 min-w-0 animate-in fade-in duration-300">
             {children}
           </main>
-          
-          {/* Right Sidebar (Reminders) */}
-          <aside className="w-full xl:w-80 p-4 sm:p-6 lg:p-8 xl:pl-0 shrink-0">
-            <div className="sticky top-8">
-              <RemindersBar />
-            </div>
-          </aside>
         </div>
+
+        {/* Floating Components */}
+        <FloatingReminders />
       </div>
     </div>
   );

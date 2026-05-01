@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const Demo = require('./models/Demo');
 
 const authRoutes = require('./routes/authRoutes');
 const testRoutes = require('./routes/testroutes');
@@ -14,18 +13,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Existing test route (keep as is)
-app.get('/api/test', async (req, res) => {
-  try {
-    let testData = await Demo.findOne();
-    if (!testData) {
-      testData = await Demo.create({ message: "API working" });
-    }
-    res.json({ message: testData.message, fromDatabase: true });
-  } catch (error) {
-    console.error('DB test error:', error);
-    res.status(500).json({ message: "Backend is running, but Database query failed.", error: error.message });
-  }
+// Basic health route that does not depend on database models.
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API working', fromDatabase: false });
 });
 
 // Auth routes
