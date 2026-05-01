@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Bell, X } from 'lucide-react';
 import RemindersBar from './RemindersBar';
-import { getUser } from '../utils/auth';
+import { getUser } from '../../utils/auth';
 
 const FloatingReminders = () => {
   const [isOpen, setIsOpen] = useState(false);

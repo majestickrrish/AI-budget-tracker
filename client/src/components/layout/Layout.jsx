@@ -1,11 +1,11 @@
 // ─── Layout.jsx ──────────────────────────────────────────────────────────────
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { logout, getUser } from '../utils/auth';
-import ThemeToggle from './ThemeToggle';
+import { logout, getUser } from '../../utils/auth';
+import ThemeToggle from '../common/ThemeToggle';
 import { Wallet, LayoutDashboard, ReceiptText, Bot, LogOut, X, Target, ChevronRight } from 'lucide-react';
 
-import FloatingReminders from './FloatingReminders';
+import FloatingReminders from '../reminders/FloatingReminders';
 
 const navItems = [
   { to: '/dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
@@ -44,19 +44,45 @@ const SidebarContent = ({ user, closeSidebar, handleLogout }) => (
       <NavLink
         to="/profile"
         className={({ isActive }) =>
-          `flex items-center gap-3 p-2 rounded-xl transition-all duration-150 group ${
+          `flex items-center gap-3 p-2 rounded-xl transition-all duration-150 group relative ${
             isActive ? 'bg-primary/5' : 'hover:bg-black/5 dark:hover:bg-white/5'
           }`
         }
         onClick={closeSidebar}
       >
-        <div className="w-9 h-9 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center text-primary text-xs font-bold uppercase shrink-0 group-hover:scale-105 transition-transform">
-          {user?.name?.[0] || 'U'}
+        <div className="relative">
+          <div className="w-9 h-9 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center text-primary text-xs font-bold uppercase shrink-0 group-hover:scale-105 transition-transform">
+            {user?.name?.[0] || 'U'}
+          </div>
+          {(() => {
+            const userId = user?._id || 'guest';
+            const onboarding = JSON.parse(localStorage.getItem(`onboarding_${userId}`) || '{}');
+            if (!onboarding.monthlyBudget || onboarding.monthlyBudget === 0) {
+              return (
+                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-danger border-2 border-card rounded-full" />
+              );
+            }
+            return null;
+          })()}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-text-default capitalize truncate leading-tight group-hover:text-primary transition-colors">
-            {user?.name || 'User'}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-bold text-text-default capitalize truncate leading-tight group-hover:text-primary transition-colors">
+              {user?.name || 'User'}
+            </p>
+            {(() => {
+              const userId = user?._id || 'guest';
+              const onboarding = JSON.parse(localStorage.getItem(`onboarding_${userId}`) || '{}');
+              if (!onboarding.monthlyBudget || onboarding.monthlyBudget === 0) {
+                return (
+                  <span className="text-[8px] font-black bg-danger/10 text-danger px-1.5 py-0.5 rounded uppercase tracking-tighter shrink-0">
+                    Incomplete
+                  </span>
+                );
+              }
+              return null;
+            })()}
+          </div>
           <p className="text-[10px] text-text-secondary truncate mt-0.5 opacity-70 font-medium">Account Settings</p>
         </div>
         <ChevronRight size={14} className="text-text-secondary opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all shrink-0" />

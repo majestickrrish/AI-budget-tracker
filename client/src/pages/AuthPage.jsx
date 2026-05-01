@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { setCredentials } from '../utils/auth';
 import { loginUser, registerUser } from '../services/api';
-import ThemeToggle from '../components/ThemeToggle';
-import { Wallet, UserCircle, Rocket, Eye, EyeOff } from 'lucide-react';
+import ThemeToggle from '../components/common/ThemeToggle';
+import { Wallet, UserCircle, Rocket, Eye, EyeOff, ChevronLeft } from 'lucide-react';
 
 /* ─── AuthPage ───────────────────────────────────────────────────────────────
    Mobile  (< md): Clean single-column card — form only, toggle link at bottom.
@@ -145,6 +145,17 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-8 relative">
+      {/* Back Button */}
+      <div className="absolute top-6 left-6">
+        <Link 
+          to="/" 
+          className="flex items-center gap-2 px-4 py-2 bg-card border border-border-default rounded-xl text-xs font-bold text-text-secondary hover:text-text-default transition-all duration-200 shadow-sm"
+        >
+          <ChevronLeft size={14} />
+          <span>Back to Home</span>
+        </Link>
+      </div>
+
       {/* Theme Toggle */}
       <div className="absolute top-6 right-6">
         <ThemeToggle className="bg-card shadow-lg border border-border-default" />

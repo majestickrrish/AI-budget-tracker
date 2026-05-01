@@ -1,7 +1,7 @@
 // ─── App.jsx ──────────────────────────────────────────────────────────────────
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import ProtectedRoute from './components/ProtectedRoute';
-import Layout from './components/Layout';
+import ProtectedRoute from './components/layout/ProtectedRoute';
+import Layout from './components/layout/Layout';
 import AuthPage from './pages/AuthPage';
 import OnboardingPage from './pages/OnboardingPage';
 import DashboardPage from './pages/DashboardPage';
@@ -9,8 +9,9 @@ import ExpensesPage from './pages/ExpensesPage';
 import InsightsPage from './pages/InsightsPage';
 import GoalsPage from './pages/GoalsPage';
 import ProfilePage from './pages/ProfilePage';
+import LandingPage from './pages/LandingPage';
 import { isAuthenticated, getUser } from './utils/auth';
-import { LoadingScreen, ErrorScreen } from './components/StatusScreens';
+import { LoadingScreen, ErrorScreen } from './components/common/StatusScreens';
 import { useState, useEffect } from 'react';
 
 // ─── Onboarding Gate ─────────────────────────────────────────────────────────
@@ -114,8 +115,8 @@ function App() {
         />
 
         {/* ── Defaults ── */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={isAuthenticated() ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

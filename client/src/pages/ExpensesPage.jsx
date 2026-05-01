@@ -1,9 +1,9 @@
 // ─── ExpensesPage.jsx ────────────────────────────────────────────────────────
 import { useState, useEffect, useCallback } from 'react';
-import ExpenseForm from '../components/ExpenseForm';
-import ExpenseList from '../components/ExpenseList';
-import ExpenseFilters from '../components/ExpenseFilters';
-import EditExpenseModal from '../components/EditExpenseModal';
+import ExpenseForm from '../components/expenses/ExpenseForm';
+import ExpenseList from '../components/expenses/ExpenseList';
+import ExpenseFilters from '../components/expenses/ExpenseFilters';
+import EditExpenseModal from '../components/expenses/EditExpenseModal';
 import { 
   getExpenses, 
   deleteExpense, 

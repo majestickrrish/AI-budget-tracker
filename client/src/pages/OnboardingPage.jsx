@@ -1,8 +1,8 @@
 // ─── OnboardingPage.jsx ──────────────────────────────────────────────────────
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Wallet, Target, Receipt, ChevronRight, ChevronLeft, Check, Plus, X, Zap, Calendar, Home, Wifi, Smartphone, ShieldCheck, Dumbbell, Brain } from 'lucide-react';
-import { getUser, setCredentials } from '../utils/auth';
+import { Wallet, Target, Receipt, ChevronRight, ChevronLeft, Check, Plus, X, Zap, Calendar, Home, Wifi, Smartphone, ShieldCheck, Dumbbell, Brain, LogOut } from 'lucide-react';
+import { getUser, setCredentials, logout } from '../utils/auth';
 import { updateProfile } from '../services/api';
 
 const FIXED_EXPENSE_SUGGESTIONS = [
@@ -42,11 +42,11 @@ const OnboardingPage = () => {
 
     const removeFixed = (id) => setFixedExpenses((prev) => prev.filter((e) => e.id !== id));
 
-    const handleFinish = async () => {
+    const handleFinish = async (isSkipped = false) => {
         setSaving(true);
         const onboardingData = {
-            monthlyBudget: Number(monthlyBudget),
-            fixedExpenses: fixedExpenses.map(({ label, amount, dueDate }) => ({ label, amount, dueDate })),
+            monthlyBudget: isSkipped ? 0 : Number(monthlyBudget),
+            fixedExpenses: isSkipped ? [] : fixedExpenses.map(({ label, amount, dueDate }) => ({ label, amount, dueDate })),
             onboardingCompleted: true,
         };
         
@@ -65,8 +65,15 @@ const OnboardingPage = () => {
             localStorage.setItem(`onboarding_${userId}`, JSON.stringify(onboardingData));
         } finally {
             setSaving(false);
-            navigate('/dashboard');
+            navigate('/dashboard', { replace: true });
         }
+    };
+
+    const handleSkip = () => handleFinish(true);
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
     };
 
     const steps = [
@@ -77,7 +84,18 @@ const OnboardingPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
+        <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10 relative">
+            {/* Top Left Logout */}
+            <div className="absolute top-6 left-6">
+                <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 bg-card border border-border-default rounded-xl text-xs font-bold text-text-secondary hover:text-danger hover:border-danger/30 transition-all duration-200 shadow-sm"
+                >
+                    <LogOut size={14} />
+                    <span>Sign Out</span>
+                </button>
+            </div>
+
             {/* Progress bar */}
             <div className="w-full max-w-lg mb-8">
                 <div className="flex items-center justify-between mb-3">
@@ -407,10 +425,11 @@ const OnboardingPage = () => {
 
             {step < 3 && (
                 <button
-                    onClick={() => navigate('/dashboard')}
-                    className="mt-5 text-xs text-text-secondary hover:text-text-default opacity-60 hover:opacity-100 transition-all"
+                    onClick={handleSkip}
+                    disabled={saving}
+                    className="mt-5 text-xs text-text-secondary hover:text-text-default opacity-60 hover:opacity-100 transition-all disabled:opacity-30"
                 >
-                    Skip for now →
+                    {saving ? 'Saving...' : 'Skip for now →'}
                 </button>
             )}
         </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Bell, CheckCircle2, AlertCircle, ChevronRight, X } from 'lucide-react';
-import { getUser } from '../utils/auth';
+import { getUser } from '../../utils/auth';
 
 const RemindersBar = ({ onClose }) => {
   const user = getUser();

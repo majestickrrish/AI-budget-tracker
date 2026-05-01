@@ -249,6 +249,10 @@ const DashboardPage = () => {
   const predictedTotal = prediction?.predictedNextMonthSpend ?? prediction?.prediction ?? null;
   const hsScore = healthScore?.score ?? healthScore?.healthScore ?? null;
 
+  // Safe percentage calculations
+  const budgetUsage = monthlyBudget > 0 ? Math.round((totalSpent / monthlyBudget) * 100) : 0;
+  const topCategoryUsage = totalSpent > 0 && topCategory ? Math.round((topCategory[1] / totalSpent) * 100) : 0;
+
   useEffect(() => {
     if (window.Chart) return;
     const s = document.createElement('script');
@@ -384,6 +388,28 @@ const DashboardPage = () => {
         </div>
       )}
 
+      {monthlyBudget === 0 && (
+        <div className="bg-danger/5 border border-danger/20 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="flex items-center gap-4 text-center sm:text-left">
+            <div className="w-12 h-12 rounded-2xl bg-danger/10 flex items-center justify-center text-danger shrink-0">
+              <ShieldAlert size={24} />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-text-default mb-1">Finish your profile for AI Insights</h3>
+              <p className="text-xs text-text-secondary leading-relaxed max-w-md">
+                You skipped onboarding. To get accurate spending predictions and AI analysis, please set your monthly budget.
+              </p>
+            </div>
+          </div>
+          <Link 
+            to="/onboarding" 
+            className="px-5 py-2.5 bg-danger text-white text-xs font-bold rounded-xl hover:bg-danger-hover transition-all shadow-lg shadow-danger/20 shrink-0"
+          >
+            Complete Setup
+          </Link>
+        </div>
+      )}
+
       {!loading && anomalies.length > 0 && (
         <div className="bg-warning/10 border border-warning/30 rounded-xl px-4 py-3 mb-5 flex items-start gap-3">
           <ShieldAlert size={16} className="text-warning shrink-0 mt-0.5" />
@@ -429,7 +455,7 @@ const DashboardPage = () => {
             <DashboardStat
               icon={TrendingUp} label="Top Category" accent="warning"
               value={topCategory ? topCategory[0] : '—'}
-              sub={topCategory ? `${Math.round((topCategory[1] / totalSpent) * 100)}% of total` : 'No data'}
+              sub={topCategory ? `${topCategoryUsage}% of total` : 'No data'}
             />
           </div>
 
@@ -441,19 +467,27 @@ const DashboardPage = () => {
                   <Target size={14} className="text-primary" />
                   <span className="text-sm font-bold text-text-default">Budget Progress</span>
                 </div>
-                <span className={`text-xs font-bold px-2 py-1 rounded-lg ${Math.round((totalSpent / monthlyBudget) * 100) > 90 ? 'bg-danger/10 text-danger' : Math.round((totalSpent / monthlyBudget) * 100) > 70 ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success'}`}>
-                  {Math.round((totalSpent / monthlyBudget) * 100)}% used
-                </span>
+                {monthlyBudget > 0 ? (
+                  <span className={`text-xs font-bold px-2 py-1 rounded-lg ${budgetUsage > 90 ? 'bg-danger/10 text-danger' : budgetUsage > 70 ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success'}`}>
+                    {budgetUsage}% used
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold px-2 py-1 rounded-lg bg-border-default text-text-secondary uppercase">
+                    No budget set
+                  </span>
+                )}
               </div>
               <div className="h-2 bg-background rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-700 ease-out ${Math.round((totalSpent / monthlyBudget) * 100) > 90 ? 'bg-danger' : Math.round((totalSpent / monthlyBudget) * 100) > 70 ? 'bg-warning' : 'bg-success'}`}
-                  style={{ width: `${Math.min(100, Math.round((totalSpent / monthlyBudget) * 100))}%` }}
+                  className={`h-full rounded-full transition-all duration-700 ease-out ${budgetUsage > 90 ? 'bg-danger' : budgetUsage > 70 ? 'bg-warning' : 'bg-success'}`}
+                  style={{ width: `${monthlyBudget > 0 ? Math.min(100, budgetUsage) : 0}%` }}
                 />
               </div>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-xs text-text-secondary">₹{totalSpent.toLocaleString('en-IN')} spent</span>
-                <span className="text-xs text-text-secondary">₹{monthlyBudget.toLocaleString('en-IN')} budget</span>
+                <span className="text-xs text-text-secondary">
+                  {monthlyBudget > 0 ? `₹${monthlyBudget.toLocaleString('en-IN')} budget` : 'Budget not configured'}
+                </span>
               </div>
             </div>
 

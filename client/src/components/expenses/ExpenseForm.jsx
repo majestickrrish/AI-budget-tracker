@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Calendar, Zap, X, Plus, Bookmark } from 'lucide-react';
-import { createExpense } from '../services/api';
+import { createExpense } from '../../services/api';
 
 const today = () => new Date().toISOString().split('T')[0];
 

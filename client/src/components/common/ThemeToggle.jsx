@@ -7,8 +7,10 @@ const ThemeToggle = ({ className = "", variant = "icon" }) => {
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark');
     } else {
       document.documentElement.removeAttribute('data-theme');
+      document.documentElement.classList.remove('dark');
     }
     localStorage.setItem('theme', theme);
     
