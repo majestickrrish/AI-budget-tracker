@@ -10,8 +10,8 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-sm">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                  <path d="M3 14L7 9L10 12L14 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="14" cy="5" r="1.5" fill="white"/>
+                  <path d="M3 14L7 9L10 12L14 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="14" cy="5" r="1.5" fill="white" />
                 </svg>
               </div>
               <span className="font-bold text-slate-900 dark:text-white tracking-tight">
@@ -31,7 +31,6 @@ export default function Footer() {
                 { label: "Features", href: "#features" },
                 { label: "How It Works", href: "#how-it-works" },
                 { label: "Dashboard", href: "#dashboard-preview" },
-                { label: "Pricing", href: "/pricing" },
               ].map((link) => (
                 <li key={link.label}>
                   <a href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150">
@@ -49,7 +48,6 @@ export default function Footer() {
               {[
                 { label: "Login", href: "/login" },
                 { label: "Register", href: "/register" },
-                { label: "GitHub", href: "https://github.com", external: true },
                 { label: "Contact", href: "mailto:hello@aibudgettracker.com" },
               ].map((link) => (
                 <li key={link.label}>
@@ -62,7 +60,7 @@ export default function Footer() {
                     {link.label}
                     {link.external && (
                       <svg width="10" height="10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                        <path d="M2 8L8 2M5 2h3v3"/>
+                        <path d="M2 8L8 2M5 2h3v3" />
                       </svg>
                     )}
                   </a>

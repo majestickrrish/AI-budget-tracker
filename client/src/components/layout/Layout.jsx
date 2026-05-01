@@ -137,7 +137,7 @@ const Layout = ({ children }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const closeSidebar = () => setSidebarOpen(false);

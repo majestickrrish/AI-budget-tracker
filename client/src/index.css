@@ -21,6 +21,9 @@ html {
   --color-warning: var(--warning);
 }
 
+/* Explicitly tell Tailwind 4 to use .dark class for dark: variants */
+@custom-variant dark (&:where(.dark, [data-theme="dark"] *));
+
 @layer base {
   :root {
     --bg: #F9FAFB;

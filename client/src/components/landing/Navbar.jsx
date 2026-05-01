@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import ThemeToggle from "../common/ThemeToggle";
 
 const navLinks = [
+  { label: "Home", href: "#" },
   { label: "Features", href: "#features" },
   { label: "How It Works", href: "#how-it-works" },
+  { label: "Platform", href: "#dashboard-preview" },
 ];
 
 export default function Navbar() {
@@ -18,11 +20,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-        scrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${scrolled
           ? "bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border-b border-slate-100 dark:border-slate-800"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -30,8 +31,8 @@ export default function Navbar() {
           <a href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-sm group-hover:shadow-blue-200 dark:group-hover:shadow-blue-900 transition-shadow duration-200">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M3 14L7 9L10 12L14 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="14" cy="5" r="1.5" fill="white"/>
+                <path d="M3 14L7 9L10 12L14 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="14" cy="5" r="1.5" fill="white" />
               </svg>
             </div>
             <span className="font-bold text-slate-900 dark:text-white tracking-tight text-[15px]">
@@ -79,11 +80,11 @@ export default function Navbar() {
             >
               {menuOpen ? (
                 <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M4 4l12 12M16 4L4 16"/>
+                  <path d="M4 4l12 12M16 4L4 16" />
                 </svg>
               ) : (
                 <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M3 6h14M3 10h14M3 14h14"/>
+                  <path d="M3 6h14M3 10h14M3 14h14" />
                 </svg>
               )}
             </button>
