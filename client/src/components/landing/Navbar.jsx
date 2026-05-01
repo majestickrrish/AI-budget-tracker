@@ -20,33 +20,33 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${scrolled
-          ? "bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border-b border-slate-100 dark:border-slate-800"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
+          ? "bg-background/80 backdrop-blur-xl border-b border-border-default shadow-sm"
           : "bg-transparent"
         }`}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-10 lg:px-16">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-sm group-hover:shadow-blue-200 dark:group-hover:shadow-blue-900 transition-shadow duration-200">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M3 14L7 9L10 12L14 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform duration-200">
+              <svg width="20" height="20" viewBox="0 0 18 18" fill="none">
+                <path d="M3 14L7 9L10 12L14 6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 <circle cx="14" cy="5" r="1.5" fill="white" />
               </svg>
             </div>
-            <span className="font-bold text-slate-900 dark:text-white tracking-tight text-[15px]">
-              AI Budget<span className="text-blue-500">Tracker</span>
+            <span className="font-black text-text-default tracking-tighter text-lg whitespace-nowrap">
+              AI Budget<span className="text-primary">Tracker</span>
             </span>
           </a>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150"
+                className="text-sm font-bold text-text-secondary hover:text-primary transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -54,37 +54,37 @@ export default function Navbar() {
           </div>
 
           {/* Desktop actions */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-5">
             <ThemeToggle />
             <a
               href="/login"
-              className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150 px-3 py-1.5"
+              className="text-sm font-bold text-text-secondary hover:text-primary transition-colors duration-200"
             >
               Login
             </a>
             <a
               href="/register"
-              className="text-sm font-semibold bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-150 shadow-sm"
+              className="text-sm font-black bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95"
             >
-              Get Started Free
+              Get Started
             </a>
           </div>
 
           {/* Mobile: theme + hamburger */}
-          <div className="flex md:hidden items-center gap-3">
+          <div className="flex md:hidden items-center gap-4">
             <ThemeToggle />
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-150"
+              className="p-2 rounded-xl text-text-secondary hover:bg-background transition-colors duration-200"
             >
               {menuOpen ? (
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M4 4l12 12M16 4L4 16" />
+                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M3 6h14M3 10h14M3 14h14" />
+                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
@@ -93,26 +93,27 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden pb-4 border-t border-slate-100 dark:border-slate-800 mt-1 pt-3 flex flex-col gap-2">
+          <div className="md:hidden pb-8 border-t border-border-default mt-2 pt-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-500 px-2 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-150"
+                className="text-base font-bold text-text-default hover:text-primary transition-colors duration-200"
               >
                 {link.label}
               </a>
             ))}
+            <div className="h-px bg-border-default my-2" />
             <a
               href="/login"
-              className="text-sm font-medium text-slate-700 dark:text-slate-300 px-2 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-150"
+              className="text-base font-bold text-text-default hover:text-primary transition-colors duration-200"
             >
               Login
             </a>
             <a
               href="/register"
-              className="w-full text-center text-sm font-semibold bg-blue-500 hover:bg-blue-600 text-white px-4 py-2.5 rounded-lg transition-colors duration-150"
+              className="w-full text-center text-base font-black bg-primary hover:bg-primary-hover text-white px-5 py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-primary/20"
             >
               Get Started Free
             </a>

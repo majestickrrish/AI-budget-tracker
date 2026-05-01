@@ -76,21 +76,21 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <div id="features" className="w-full py-20">
+    <div id="features" className="w-full py-16 bg-background scroll-mt-6">
       <SectionContainer>
-        <div className="text-center mb-12">
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-500 dark:text-blue-400 mb-3">
+        <div className="text-center mb-16">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4">
             Everything you need
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-3xl sm:text-4xl font-black text-text-default tracking-tight">
             Built for people who take money seriously
           </h2>
-          <p className="mt-4 text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
+          <p className="mt-4 text-text-secondary max-w-xl mx-auto leading-relaxed opacity-80">
             Six powerful features working together to give you total financial clarity.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((f) => (
             <FeatureCard key={f.title} {...f} />
           ))}

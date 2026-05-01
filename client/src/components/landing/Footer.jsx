@@ -2,38 +2,38 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+    <footer className="w-full bg-card">
+      <div className="max-w-5xl mx-auto px-8 sm:px-12 lg:px-16 py-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-sm">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                  <path d="M3 14L7 9L10 12L14 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                <svg width="22" height="22" viewBox="0 0 18 18" fill="none">
+                  <path d="M3 14L7 9L10 12L14 6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   <circle cx="14" cy="5" r="1.5" fill="white" />
                 </svg>
               </div>
-              <span className="font-bold text-slate-900 dark:text-white tracking-tight">
-                AI Budget<span className="text-blue-500">Tracker</span>
+              <span className="font-black text-text-default text-xl tracking-tighter">
+                AI Budget<span className="text-primary">Tracker</span>
               </span>
             </div>
-            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs">
-              The AI-powered finance assistant that helps you track, predict, and optimize your spending — automatically.
+            <p className="text-sm text-text-secondary leading-relaxed max-w-sm opacity-80">
+              The AI-powered finance assistant that helps you track, predict, and optimize your spending — automatically and securely.
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-4">Product</p>
-            <ul className="space-y-2.5">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary mb-6 opacity-60">Product</p>
+            <ul className="space-y-4">
               {[
                 { label: "Features", href: "#features" },
                 { label: "How It Works", href: "#how-it-works" },
                 { label: "Dashboard", href: "#dashboard-preview" },
               ].map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150">
+                  <a href={link.href} className="text-sm text-text-secondary hover:text-primary transition-colors duration-200 font-medium">
                     {link.label}
                   </a>
                 </li>
@@ -43,23 +43,23 @@ export default function Footer() {
 
           {/* Account */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-4">Account</p>
-            <ul className="space-y-2.5">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary mb-6 opacity-60">Account</p>
+            <ul className="space-y-4">
               {[
                 { label: "Login", href: "/login" },
                 { label: "Register", href: "/register" },
-                { label: "Contact", href: "mailto:hello@aibudgettracker.com" },
+                { label: "Contact Support", href: "mailto:hello@aibudgettracker.com" },
               ].map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
                     target={link.external ? "_blank" : undefined}
                     rel={link.external ? "noopener noreferrer" : undefined}
-                    className="text-sm text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150 flex items-center gap-1"
+                    className="text-sm text-text-secondary hover:text-primary transition-colors duration-200 font-medium flex items-center gap-2"
                   >
                     {link.label}
                     {link.external && (
-                      <svg width="10" height="10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                      <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                         <path d="M2 8L8 2M5 2h3v3" />
                       </svg>
                     )}
@@ -70,13 +70,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-100 dark:border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-slate-400 dark:text-slate-500">
-            © {year} AI BudgetTracker. All rights reserved.
+        <div className="border-t border-border-default pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <p className="text-xs text-text-secondary opacity-60 font-medium">
+            © {year} AI BudgetTracker. Built with intelligence.
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-8">
             {["Privacy Policy", "Terms of Service"].map((item) => (
-              <a key={item} href="#" className="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150">
+              <a key={item} href="#" className="text-xs text-text-secondary opacity-60 hover:opacity-100 hover:text-primary transition-all duration-200 font-medium">
                 {item}
               </a>
             ))}

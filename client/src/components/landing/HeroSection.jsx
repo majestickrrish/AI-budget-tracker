@@ -4,14 +4,14 @@ function MiniBarChart() {
   const bars = [40, 65, 45, 80, 55, 90, 70];
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   return (
-    <div className="flex items-end gap-1.5 h-20 pt-2">
+    <div className="flex items-end gap-2 h-24 w-full">
       {bars.map((h, i) => (
-        <div key={i} className="flex flex-col items-center gap-1 flex-1">
+        <div key={i} className="flex flex-col items-center gap-1.5 flex-1 h-full justify-end">
           <div
-            className="w-full rounded-md bg-gradient-to-t from-blue-500 to-cyan-400 opacity-80 hover:opacity-100 transition-opacity duration-150"
-            style={{ height: `${h}%` }}
+            className="w-full rounded-sm bg-primary/80 hover:bg-primary transition-all duration-300"
+            style={{ height: `${h}%`, minHeight: "4px" }}
           />
-          <span className="text-[9px] text-slate-400 dark:text-slate-500">{labels[i]}</span>
+          <span className="text-[8px] font-bold text-text-secondary opacity-50 uppercase tracking-tighter">{labels[i]}</span>
         </div>
       ))}
     </div>
@@ -20,10 +20,10 @@ function MiniBarChart() {
 
 function MiniDonut() {
   const segments = [
-    { pct: 35, color: "#3b82f6" },
-    { pct: 25, color: "#06b6d4" },
-    { pct: 20, color: "#8b5cf6" },
-    { pct: 20, color: "#e2e8f0" },
+    { pct: 35, color: "var(--primary)" },
+    { pct: 25, color: "var(--success)" },
+    { pct: 20, color: "var(--warning)" },
+    { pct: 20, color: "var(--border)" },
   ];
   let offset = 0;
   const r = 28, c = 2 * Math.PI * r;
@@ -52,42 +52,42 @@ function MiniDonut() {
 
 export default function HeroSection() {
   return (
-    <section className="relative pt-28 pb-20 overflow-hidden bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+    <section className="relative pt-24 pb-16 overflow-hidden bg-background">
       {/* Subtle background orbs */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-br from-blue-100/60 via-cyan-100/30 to-transparent dark:from-blue-900/20 dark:via-cyan-900/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-full blur-3xl pointer-events-none" />
       
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-8 sm:px-12 lg:px-16">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* Left: Copy */}
           <div className="flex flex-col gap-6">
-            <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold px-3 py-1.5 rounded-full self-start border border-blue-100 dark:border-blue-800">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-full self-start border border-primary/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               AI-Powered Finance Assistant
             </div>
             
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white leading-[1.15] tracking-tight">
+            <h1 className="text-4xl sm:text-5xl font-black text-text-default leading-[1.15] tracking-tight">
               Take Control of Your Money with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-hover">
                 AI-Powered Insights
               </span>
             </h1>
             
-            <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl">
+            <p className="text-lg text-text-secondary leading-relaxed max-w-xl opacity-90">
               Track expenses, predict spending, and get smart financial advice — all in one place. Your personal CFO that never sleeps.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button href="/register" variant="primary" className="w-full sm:w-auto px-7 py-3 text-base">
+              <Button href="/register" variant="primary" className="w-full sm:w-auto px-7 py-3.5 text-base group/btn">
                 Get Started Free
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12H19M13 6l6 6-6 6"/>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover/btn:translate-x-1 transition-transform">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
               </Button>
-              <Button href="#dashboard-preview" variant="secondary" className="w-full sm:w-auto px-7 py-3 text-base">
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <circle cx="8" cy="8" r="6"/>
-                  <path d="M6.5 6.5l4 1.5-4 1.5V6.5z" fill="currentColor"/>
+              <Button href="#dashboard-preview" variant="secondary" className="w-full sm:w-auto px-7 py-3.5 text-base">
+                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <circle cx="9" cy="9" r="7"/>
+                  <path d="M7.5 7.5l4 1.5-4 1.5V7.5z" fill="currentColor"/>
                 </svg>
                 View Demo
               </Button>
@@ -99,8 +99,8 @@ export default function HeroSection() {
                 { label: "No Credit Card Required", icon: "✓" },
                 { label: "Setup in 2 min", icon: "✓" },
               ].map((item) => (
-                <div key={item.label} className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  <span className="text-green-500 font-bold">{item.icon}</span>
+                <div key={item.label} className="flex items-center gap-1.5 text-xs text-text-secondary font-bold opacity-70">
+                  <span className="text-success">{item.icon}</span>
                   {item.label}
                 </div>
               ))}
@@ -108,16 +108,16 @@ export default function HeroSection() {
           </div>
 
           {/* Right: Mock Dashboard */}
-          <div className="relative">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl dark:shadow-slate-900 border border-slate-100 dark:border-slate-700 p-5 space-y-4">
+          <div className="relative group">
+            <div className="bg-card rounded-3xl shadow-2xl shadow-primary/10 border border-border-default p-6 space-y-5 transition-all duration-500 group-hover:border-primary/20">
               {/* Top bar */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">Total Balance</p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white">$12,450.00</p>
+                  <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest opacity-60">Total Balance</p>
+                  <p className="text-2xl font-black text-text-default">₹1,24,450</p>
                 </div>
-                <div className="flex items-center gap-1 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-semibold px-2.5 py-1 rounded-full">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 8l4-4 2 2 2-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                <div className="flex items-center gap-1.5 bg-success/10 text-success text-[10px] font-black px-3 py-1 rounded-full">
+                  <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 8l4-4 2 2 2-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   +8.2% this month
                 </div>
               </div>
@@ -125,66 +125,70 @@ export default function HeroSection() {
               {/* Stats row */}
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "Income", value: "$5,200", color: "text-green-500" },
-                  { label: "Expenses", value: "$2,840", color: "text-red-400" },
-                  { label: "Savings", value: "$1,430", color: "text-blue-500" },
+                  { label: "Income", value: "₹52,000", color: "text-success" },
+                  { label: "Expenses", value: "₹28,400", color: "text-danger" },
+                  { label: "Savings", value: "₹14,300", color: "text-primary" },
                 ].map((s) => (
-                  <div key={s.label} className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-3 text-center">
-                    <p className={`text-base font-bold ${s.color}`}>{s.value}</p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">{s.label}</p>
+                  <div key={s.label} className="bg-background/50 rounded-2xl p-3.5 text-center border border-border-default/50">
+                    <p className={`text-sm font-black ${s.color}`}>{s.value}</p>
+                    <p className="text-[9px] font-bold text-text-secondary mt-1 uppercase tracking-tighter opacity-60">{s.label}</p>
                   </div>
                 ))}
               </div>
 
               {/* Chart + Donut */}
-              <div className="grid grid-cols-5 gap-3">
-                <div className="col-span-3 bg-slate-50 dark:bg-slate-700/40 rounded-xl p-3">
-                  <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 mb-1">Weekly Spending</p>
-                  <MiniBarChart />
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+                <div className="sm:col-span-3 bg-background/50 rounded-2xl p-5 border border-border-default/50">
+                  <p className="text-[9px] font-black text-text-secondary uppercase tracking-widest opacity-60 mb-4">Weekly Spending</p>
+                  <div className="h-24 flex items-end">
+                    <MiniBarChart />
+                  </div>
                 </div>
-                <div className="col-span-2 bg-slate-50 dark:bg-slate-700/40 rounded-xl p-3 flex flex-col items-center justify-center gap-2">
-                  <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">By Category</p>
-                  <MiniDonut />
+                <div className="sm:col-span-2 bg-background/50 rounded-2xl p-5 border border-border-default/50 flex flex-col items-center justify-center gap-3 overflow-hidden">
+                  <p className="text-[9px] font-black text-text-secondary uppercase tracking-widest opacity-60">By Category</p>
+                  <div className="py-2">
+                    <MiniDonut />
+                  </div>
                 </div>
               </div>
 
               {/* AI Insight */}
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/20 border border-blue-100 dark:border-blue-800/50 rounded-xl p-3 flex items-start gap-2.5">
-                <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.5H11L8 7L9.5 11L6 9L2.5 11L4 7L1 4.5H4.5L6 1Z" fill="white"/></svg>
+              <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 mt-0.5 shadow-lg shadow-primary/20">
+                  <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.5H11L8 7L9.5 11L6 9L2.5 11L4 7L1 4.5H4.5L6 1Z" fill="white"/></svg>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400">AI Insight</p>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug mt-0.5">
-                    You're spending 23% more on dining this month. Cut $180 to hit your savings goal.
+                  <p className="text-[10px] font-black text-primary uppercase tracking-widest">AI Insight</p>
+                  <p className="text-xs text-text-default font-medium leading-relaxed mt-1 opacity-90">
+                    You're spending 23% more on dining this month. Cut ₹1,800 to hit your savings goal.
                   </p>
                 </div>
               </div>
 
               {/* Health Score */}
               <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full border-2 border-green-400 flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-green-500">84</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full border-2 border-success flex items-center justify-center">
+                    <span className="text-xs font-black text-success">84</span>
                   </div>
                   <div>
-                    <p className="text-[10px] font-semibold text-slate-700 dark:text-slate-200">Health Score</p>
-                    <p className="text-[9px] text-green-500">Good standing</p>
+                    <p className="text-[11px] font-black text-text-default">Health Score</p>
+                    <p className="text-[9px] font-bold text-success uppercase">Good standing</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] font-semibold text-slate-700 dark:text-slate-200">Next Bill</p>
-                  <p className="text-[9px] text-amber-500">Netflix · in 3 days</p>
+                  <p className="text-[11px] font-black text-text-default">Next Bill</p>
+                  <p className="text-[9px] font-bold text-warning uppercase">Netflix · in 3 days</p>
                 </div>
               </div>
             </div>
 
             {/* Floating badge */}
-            <div className="absolute -bottom-4 -left-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-2 shadow-lg flex items-center gap-2">
-              <span className="text-base">🎯</span>
+            <div className="absolute -bottom-6 -left-6 bg-card border border-border-default rounded-2xl px-4 py-3 shadow-2xl flex items-center gap-3 animate-bounce-slow">
+              <div className="w-8 h-8 bg-warning/20 rounded-xl flex items-center justify-center text-lg">🎯</div>
               <div>
-                <p className="text-[10px] font-bold text-slate-900 dark:text-white">Savings Goal</p>
-                <p className="text-[9px] text-slate-400">72% complete</p>
+                <p className="text-xs font-black text-text-default leading-tight">Savings Goal</p>
+                <p className="text-[10px] font-bold text-text-secondary opacity-70">72% complete</p>
               </div>
             </div>
           </div>

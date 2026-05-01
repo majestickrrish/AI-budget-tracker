@@ -40,6 +40,7 @@ const OnboardingGate = ({ children }) => {
 function App() {
   const [initializing, setInitializing] = useState(true);
   const [systemError, setSystemError] = useState(null);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
     // Simulate initial data fetching and auth check
@@ -47,30 +48,54 @@ function App() {
       setInitializing(false);
     }, 1500);
 
-    // Global listener for system failures (API crashes, etc.)
+    // Global listener for system failures
     const handleSystemError = (e) => {
       if (e.detail?.type === 'system_failure') {
         setSystemError(e.detail);
       }
     };
+
+    // Internet connectivity listeners
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
     window.addEventListener('app_error', handleSystemError);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
     return () => {
       clearTimeout(timeout);
       window.removeEventListener('app_error', handleSystemError);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, []);
 
+  // Priority 1: Network Offline
+  if (isOffline) {
+    return (
+      <ErrorScreen 
+        type="network" 
+        resetAction={() => window.location.reload()} 
+      />
+    );
+  }
+
+  // Priority 2: Critical System Errors
   if (systemError) {
     return (
       <ErrorScreen 
         type={systemError.severity === 'fatal' ? 'server' : 'general'} 
         error={systemError}
-        resetAction={() => window.location.reload()}
+        resetAction={() => {
+          setSystemError(null);
+          window.location.reload();
+        }}
       />
     );
   }
 
+  // Priority 3: Initial Load
   if (initializing) {
     return <LoadingScreen message="Securing your financial data..." />;
   }

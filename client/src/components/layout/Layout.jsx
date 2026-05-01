@@ -137,7 +137,8 @@ const Layout = ({ children }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    // Use window.location.href for logout to ensure a full app state reset
+    window.location.href = '/';
   };
 
   const closeSidebar = () => setSidebarOpen(false);

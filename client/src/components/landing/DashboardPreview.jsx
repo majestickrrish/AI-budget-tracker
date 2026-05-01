@@ -60,16 +60,16 @@ const insightColors = {
 
 export default function DashboardPreview() {
   return (
-    <div id="dashboard-preview" className="w-full py-20">
+    <div id="dashboard-preview" className="w-full py-16 bg-background scroll-mt-6">
       <SectionContainer>
-        <div className="text-center mb-12">
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-500 dark:text-blue-400 mb-3">
+        <div className="text-center mb-16">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4">
             Your command center
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-3xl sm:text-4xl font-black text-text-default tracking-tight">
             Everything at a glance
           </h2>
-          <p className="mt-4 text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
+          <p className="mt-4 text-text-secondary max-w-xl mx-auto leading-relaxed opacity-80">
             A beautiful, information-dense dashboard that makes complex finances feel simple.
           </p>
         </div>
